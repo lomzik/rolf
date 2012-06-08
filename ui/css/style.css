@@ -1,0 +1,49 @@
+/* basic styles */
+html, body {
+    height: auto ;
+}
+
+a {
+    cursor: pointer;
+    outline: none;
+    text-decoration: none ;
+}
+
+a:hover {
+    text-decoration: underline ;
+}
+
+img {
+    border: 0;
+    border: none ;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    color: #fff;
+    display: block;
+    line-height: 100%;
+    text-align: center ;
+}
+
+h1 {
+    font-size: 170% ;
+}
+
+h2 {
+    font-size: 105% ;
+}
+
+h3 {
+    font-size: 110% ;
+}
+
+sup, sub {
+    height: 0;
+    line-height: 100% ;
+}
+
+body {
+    font-family: Arial;
+    font-size: 1em ;
+}
+

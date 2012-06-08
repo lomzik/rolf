@@ -1,0 +1,14 @@
+/*reset styles*/
+html, body, div, span, object, h1, h2, h3, h4, h5, h6, p, blockquote, a, dfn, em, img, strong, sub, sup, dd, dl, dt, li, ol, ul, fieldset, form, label, input, select, legend, table, caption, tbody, tfoot, thead, tr, th, td {margin: 0;padding: 0;}
+img, a img, :link img, :visited img {border: 0 none;}
+table {border-collapse: collapse;border-spacing: 0;}
+ul, li{list-style: none;}
+:focus {outline: 0;}
+textarea{resize: none;}
+/*END reset styles*/
+/* clearfix */
+.clearfix:after {clear: both;content: ".";display: block;height: 0;visibility: hidden;}
+.clearfix {display: inline-block;}
+* html .clearfix {height: 1%;}
+.clearfix {display: block;}
+/* END clearfix */

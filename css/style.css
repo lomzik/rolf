@@ -1,0 +1,119 @@
+/* basic styles */
+html, body {
+    height: auto;
+}
+
+a {
+    cursor: pointer;
+    outline: none;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+img {
+    border: 0;
+    border: none;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    color: #fff;
+    display: block;
+    line-height: 100%;
+    text-align: center;
+}
+
+h1 {
+    font-size: 170%;
+}
+
+h2 {
+    font-size: 105%;
+}
+
+h3 {
+    font-size: 110%;
+}
+
+sup, sub {
+    height: 0;
+    line-height: 100%;
+}
+
+body {
+    font-family: Arial;
+    font-size: 1em;
+}
+
+.clear {
+    clear: both;
+}
+
+/*
+*   Header Styles
+*/
+
+#header {
+    background-image: -webkit-gradient(linear, left top, left bottom, from(#3c3c3c), to(#111));
+    background-image: -webkit-linear-gradient(#d61d25, #c4141b);
+    background-image: -moz-linear-gradient(#d61d25, #c4141b);
+    background-image: -ms-linear-gradient(#d61d25, #c4141b);
+    background-image: -o-linear-gradient(#d61d25, #c4141b);
+    background-image: linear-gradient(#d61d25, #c4141b)
+}
+
+#header .header-button {
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    border-radius: 5px;
+    -moz-box-shadow: 0 0 2px rgba(0, 0, 0, 0.5);
+    -webkit-box-shadow: 0 0 2px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 0 2px rgba(0, 0, 0, 0.5);
+    border: 1px solid #b50d11;
+    display: block;
+    height: 34px;
+    width: 40px;
+    margin: 5px 5px;
+}
+
+#header #danger-button {
+    float: left;
+}
+
+
+#header .header-button a{
+    display: block;
+    height: 21px;
+    width: 29px;
+    margin: 5px 0 0 6px;
+}
+
+#header #danger-button a{
+    background: url('../img/bg_danger.png') no-repeat;
+}
+
+#header #profile-button a{
+    background: url('../img/bg_profile.png') no-repeat;
+
+}
+
+#header #profile-button {
+    float: right;
+}
+
+#header h1{
+    margin: 0;
+    font-size: 28px;
+    line-height: 47px;
+}
+
+#footer {
+    background-image: -webkit-gradient(linear, left top, left bottom, from(#ece9e9), to(#c9c9c9));
+    background-image: -webkit-linear-gradient(#ece9e9, #c9c9c9);
+    background-image: -moz-linear-gradient(#ece9e9, #c9c9c9);
+    background-image: -ms-linear-gradient(#ece9e9, #c9c9c9);
+    background-image: -o-linear-gradient(#ece9e9, #c9c9c9);
+    background-image: linear-gradient(#ece9e9, #c9c9c9);
+}

@@ -55,16 +55,30 @@ body {
 *   Header Styles
 */
 
+#page {
+    background: #dcdcdc;
+}
+
+#content{padding: 0;}
+
 #header {
+    background: #c4141b;
     background-image: -webkit-gradient(linear, left top, left bottom, from(#3c3c3c), to(#111));
     background-image: -webkit-linear-gradient(#d61d25, #c4141b);
     background-image: -moz-linear-gradient(#d61d25, #c4141b);
     background-image: -ms-linear-gradient(#d61d25, #c4141b);
     background-image: -o-linear-gradient(#d61d25, #c4141b);
-    background-image: linear-gradient(#d61d25, #c4141b)
+    background-image: linear-gradient(#d61d25, #c4141b);
 }
 
 #header .header-button {
+    display: block;
+    height: 34px;
+    width: 40px;
+    margin: 5px 5px;
+}
+
+#header .header-button.active{
     -moz-border-radius: 5px;
     -webkit-border-radius: 5px;
     border-radius: 5px;
@@ -72,29 +86,25 @@ body {
     -webkit-box-shadow: 0 0 2px rgba(0, 0, 0, 0.5);
     box-shadow: 0 0 2px rgba(0, 0, 0, 0.5);
     border: 1px solid #b50d11;
-    display: block;
-    height: 34px;
-    width: 40px;
-    margin: 5px 5px;
 }
 
 #header #danger-button {
     float: left;
+    cursor: pointer;
 }
 
-
-#header .header-button a{
+#header .header-button a {
     display: block;
     height: 21px;
     width: 29px;
     margin: 5px 0 0 6px;
 }
 
-#header #danger-button a{
+#header #danger-button a {
     background: url('../img/bg_danger.png') no-repeat;
 }
 
-#header #profile-button a{
+#header #profile-button a {
     background: url('../img/bg_profile.png') no-repeat;
 
 }
@@ -103,7 +113,7 @@ body {
     float: right;
 }
 
-#header h1{
+#header h1 {
     margin: 0;
     font-size: 28px;
     line-height: 47px;
@@ -116,4 +126,196 @@ body {
     background-image: -ms-linear-gradient(#ece9e9, #c9c9c9);
     background-image: -o-linear-gradient(#ece9e9, #c9c9c9);
     background-image: linear-gradient(#ece9e9, #c9c9c9);
+}
+
+#footer .footer-button {
+    float: left;
+    width: 20%;
+    background: transparent;
+    border: none;
+    display: block;
+    vertical-align: bottom;
+    margin: 2px 0;
+    text-align: center;
+    padding-top: 30px;
+    color: #4a4a54;
+    font-size: 10px;
+}
+
+#footer .footer-button:hover{
+    text-decoration: none;
+}
+
+#footer .footer-button.start {
+    background: url('../img/bg_flag.png') no-repeat top center;
+}
+
+#footer .footer-button.news {
+    background: url('../img/bg_service.png') no-repeat top center;
+}
+
+#footer .footer-button.services {
+    background: url('../img/bg_service.png') no-repeat top center;
+}
+
+#footer .footer-button.locator {
+    background: url('../img/bg_service.png') no-repeat top center;
+}
+
+#footer .footer-button.settings {
+    background: url('../img/bg_service.png') no-repeat top center;
+}
+
+#news_block_wr{
+    background: url('../img/news_bg.png') repeat;
+    padding: 8px 10px;
+}
+
+#news_block .header {
+    background: #cd1920;
+    display: block;
+    text-align: center;
+    color: #fff;
+    font-size: 13px;
+    font-weight: bold;
+    padding: 2px 0;
+    border-radius: 4px 4px 0 0;
+}
+
+#news_block .news-content-block {
+    padding: 13px 5px 34px;
+    background: #fff;
+    border-radius: 0 0 4px 4px;
+}
+
+#news_block .news-image {
+    float: left;
+    width: 100px;
+    padding: 0 5px;
+}
+
+#news_block .news-content {
+    margin-left: 110px;
+}
+
+#news_block .news-content p {
+    color: #2d2d2e;
+    font-size: 13px;
+    margin-bottom: 10px;
+}
+
+#news_block .news-content .date {
+    color: #61616c;
+    font-size: 10px;
+}
+
+#services_block {
+    margin: 6px 4px;
+}
+
+#services_wr{
+    text-shadow: none;
+}
+
+#services_block .service {
+    background: #fff;
+    padding: 5px 0 0 0;
+    border-left: 1px solid #d1d1d1;
+    border-right: 1px solid #d1d1d1;
+    border-bottom: 1px solid #d1d1d1;
+}
+
+#services_block .service.first {
+    border-radius: 4px 4px 0 0;
+    border-top: 1px solid #d1d1d1;
+}
+
+#services_block .service.last {
+    border-radius: 0 0 4px 4px;
+}
+
+#services_block .service .service-image {
+    width: 50px;
+    float: left;
+    text-align: center;
+    margin-right: 5px;
+}
+
+#services_block .service .service-content-block {
+    float: left;
+    padding-bottom: 10px;
+}
+
+#services_block .service span {
+    color: #272727;
+    font-weight: bold;
+    margin-bottom: 7px;
+}
+
+#services_block .service p {
+    color: #969696;
+    font-size: 12px;
+    margin-top: 5px;
+}
+
+#services_block .service .service-arrow {
+    background: url('../img/bg_check.png') no-repeat center center;
+    width: 7px;
+    height: 11px;
+    float: right;
+    margin-right: 10px;
+    margin-top: 10px;
+}
+
+#services_additional{
+    margin: -5px 5px 0 5px;
+}
+
+#services_additional .additional-arrow{
+    background: url('../img/additional_arrow.png') no-repeat;
+    width: 16px;
+    height: 9px;
+    margin-left: 12px;
+}
+
+#services_additional .services-additional-block{
+    background: #3a3a3a;
+    border-radius: 5px;
+    padding: 5px 5px;
+}
+
+#services_additional .service{
+    border: 1px solid #4d4b4b;
+    padding: 5px 5px;
+    margin: 0 0 5px 0;
+    border-radius: 5px;
+}
+
+#services_additional .service .service-image {
+    width: 50px;
+    float: left;
+    margin-right: 5px;
+    text-align: center;
+}
+
+#services_additional .service .service-content-block {
+    padding-bottom: 10px;
+    margin-left: 60px;
+}
+
+#services_additional .service span {
+    color: #fff;
+    font-weight: bold;
+    margin-bottom: 7px;
+    font-size: 17px;
+}
+
+#services_additional .service p {
+    color: #9a9595;
+    font-size: 12px;
+    margin-top: 5px;
+}
+
+#services_wr{
+    position: relative;
 }

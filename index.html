@@ -3,18 +3,19 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/>
     <title>Rolf Application</title>
-    <link rel="stylesheet" href="ui/css/style.css"/>
-    <link rel="stylesheet" href="ui/css/reset.css"/>
     <meta name="viewport" content="width=device-width, initial-scale=1">
+
     <link rel="stylesheet" href="css/jquery.mobile-1.1.0.min.css"/>
+    <link rel="stylesheet" href="css/reset.css"/>
     <link rel="stylesheet" href="css/style.css"/>
     <script src="js/jquery-1.7.2.min.js"></script>
     <script src="js/jquery.mobile-1.1.0.min.js"></script>
+    <script src="js/main.js"></script>
 </head>
 <body>
 <div id="page" data-role="page">
 
-    <div id="header" class="header" data-role="header">
+    <div id="header" class="header" data-role="header" data-position="fixed">
 
         <div class="header-button" id="danger-button">
             <a href="#"></a>
@@ -25,16 +26,128 @@
         </div>
 
         <h1>РОЛЬФ</h1>
+
         <div class="clear"></div>
     </div>
 
     <div id="content" data-role="content">
 
+        <div id="services_wr">
+            <div id="services_additional" style="display:none">
+                <div class="additional-arrow"></div>
+                <div class="services-additional-block">
+                    <div class="service">
+                        <div class="service-image">
+                            <img src="img/bg_repair.png"/>
+                        </div>
+                        <div class="service-content-block">
+                            <span>Техническое обслуживание</span>
+
+                            <p>Подача заявок на техническое обслуживание</p>
+                        </div>
+                        <br clear="all"/>
+                    </div>
+                    <div class="service">
+                        <div class="service-image">
+                            <img src="img/bg_repair.png"/>
+                        </div>
+                        <div class="service-content-block">
+                            <span>Техническое обслуживание</span>
+
+                            <p>Подача заявок на техническое обслуживание</p>
+                        </div>
+                        <br clear="all"/>
+                    </div>
+                    <div class="service">
+                        <div class="service-image">
+                            <img src="img/bg_repair.png"/>
+                        </div>
+                        <div class="service-content-block">
+                            <span>Техническое обслуживание</span>
+
+                            <p>Подача заявок на техническое обслуживание</p>
+                        </div>
+
+                        <br clear="all"/>
+                    </div>
+                </div>
+            </div>
+
+            <div id="services_block">
+                <div class="service first">
+                    <div class="service-image">
+                        <img src="img/bg_repair.png"/>
+                    </div>
+                    <div class="service-content-block">
+                        <span>Техническое обслуживание</span>
+
+                        <p>Подача заявок на техническое обслуживание</p>
+                    </div>
+                    <div class="service-arrow">
+                        <a href="#"></a>
+                    </div>
+                    <br clear="all"/>
+                </div>
+                <div class="service">
+                    <div class="service-image">
+                        <img src="img/bg_repair.png"/>
+                    </div>
+                    <div class="service-content-block">
+                        <span>Техническое обслуживание</span>
+
+                        <p>Подача заявок на техническое обслуживание</p>
+                    </div>
+                    <div class="service-arrow">
+                        <a href="#"></a>
+                    </div>
+                    <br clear="all"/>
+                </div>
+                <div class="service last">
+                    <div class="service-image">
+                        <img src="img/bg_repair.png"/>
+                    </div>
+                    <div class="service-content-block">
+                        <span>Техническое обслуживание</span>
+
+                        <p>Подача заявок на техническое обслуживание</p>
+                    </div>
+                    <div class="service-arrow">
+                        <a href="#"></a>
+                    </div>
+                    <br clear="all"/>
+                </div>
+            </div>
+        </div>
+
+        <div id="news_block_wr">
+            <div id="news_block">
+                <span class="header">Новости</span>
+
+                <div class="news-content-block">
+                    <div class="news-image">
+                        <img src="img/bg_news1.png"/>
+                    </div>
+                    <div class="news-content">
+                        <p>1000 литров бензина в подарок при покупке SKODA
+                            в Автоцентре Софийская</p>
+                        <span class="date">26.01.2012</span>
+                    </div>
+                    <br clear="all"/>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <div id="footer" data-role="footer">
-123
+    <div id="footer" data-role="footer" data-position="fixed">
+        <a href="#" class="footer-button start">Стартовая</a>
+        <a href="#" class="footer-button news">Новости</a>
+        <a href="#" class="footer-button services">Сервисы</a>
+        <a href="#" class="footer-button locator">Локатор</a>
+        <a href="#" class="footer-button settings">Настройки</a>
+        <br clear="all"/>
     </div>
+
+</div>
 
 </div>
 </body>

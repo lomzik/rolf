@@ -20,20 +20,26 @@
     <div id="header" class="header" data-role="header" data-position="fixed">
 
         <div class="header-button right profile">
-            <a href="#" id="toggle_profile"></a>
+            <a href="#" id="toggle_auth"></a>
         </div>
 
         <h1>РОЛЬФ</h1>
-
 
         <div class="clear"></div>
     </div>
 
     <div id="content" data-role="content">
 
-        <div id="profile_block" style="display: none;">
-            <span>Пользователь <span id="profile_name"></span> </span>
-            <a href="#" id="logout">Выйти из системы</a>
+        <div id="auth_block">
+            <form id="auth_form" action="post">
+                <label for="login">Login:</label>
+                <input type="text" name="name" id="login" value=""/>
+
+                <label for="password">Password:</label>
+                <input type="text" name="password" id="password" value=""/>
+
+                <input type="submit" value="Login" name="login_submit"/>
+            </form>
         </div>
 
         <div id="services_wr">
@@ -127,17 +133,16 @@
             <div id="news_block">
                 <span class="header">Новости</span>
 
-                <div class="news">
-                    <div class="news-item example" style="display:none">
-                        <div class="news-image">
-                            <img src=""/>
-                        </div>
-                        <div class="news-content">
-                            <p></p>
-                            <span class="date"></span>
-                        </div>
-                        <br clear="all"/>
+                <div class="news-content-block">
+                    <div class="news-image">
+                        <img src="img/bg_news1.png"/>
                     </div>
+                    <div class="news-content">
+                        <p>1000 литров бензина в подарок при покупке SKODA
+                            в Автоцентре Софийская</p>
+                        <span class="date">26.01.2012</span>
+                    </div>
+                    <br clear="all"/>
                 </div>
             </div>
         </div>

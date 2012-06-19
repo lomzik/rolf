@@ -104,15 +104,15 @@ body {
     margin: 5px 0 0 6px;
 }
 
-#header #danger-button a {
+#header .danger a {
     background: url('../img/bg_danger.png') no-repeat;
 }
 
-#header #profile-button a {
+#header .profile a {
     background: url('../img/bg_profile.png') no-repeat;
 }
 
-#header #info-button a{
+#header .info a{
     background: url('../img/bg_info.png') no-repeat;
 }
 
@@ -133,7 +133,7 @@ body {
 
 #footer .footer-button {
     float: left;
-    width: 20%;
+    width: 25%;
     background: transparent;
     border: none;
     display: block;
@@ -191,7 +191,7 @@ body {
     border-radius: 4px 4px 0 0;
 }
 
-#news_block .news-content-block {
+#news_block .news-item {
     padding: 13px 5px 34px;
     background: #fff;
     border-radius: 0 0 4px 4px;
@@ -327,4 +327,19 @@ body {
 
 #services_wr{
     position: relative;
+}
+
+#auth_block{
+    background: black;
+    opacity: 0.9;
+    padding: 5px 20px;
+    position: absolute;
+    top: 40px;
+    width: 100%;
+    z-index: 10000;
+    display: none;
+}
+
+#auth_block label{
+    color: #fff;
 }

@@ -218,6 +218,11 @@ body {
     font-size: 10px;
 }
 
+#news_block .news img{
+    max-height: 100px;
+    max-width: 100px;
+}
+
 #services_block {
     margin: 6px 4px;
 }
@@ -244,7 +249,7 @@ body {
 }
 
 #services_block .service .service-image {
-    width: 50px;
+    width: 100px;
     float: left;
     text-align: center;
     margin-right: 5px;
@@ -342,4 +347,33 @@ body {
 
 #auth_block label{
     color: #fff;
+}
+
+body{
+    padding:0px;
+    margin:0px;
+}
+
+.appGallery{
+    overflow:hidden;
+}
+
+.appGallery ul{
+    list-style:none;
+    position:relative;
+    margin:0px;
+    padding:0px;
+}
+
+.appGallery li{
+    display:block;
+    float:left;
+}
+
+
+.imageHandler{
+    position:absolute;
+    z-index:30;
+    background-image:url('_/res/trans.png');
+    cursor:pointer;
 }

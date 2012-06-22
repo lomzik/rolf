@@ -10,19 +10,43 @@ var PhoneGap = false;
 // Current HTML Template
 var Page = location.pathname.substr(location.pathname.lastIndexOf('/') + 1);
 
-
-var News = {};
+var GET = {};
 
 // Redirect when Non-auth user
 getUserAuth();
 if (authUser == 0) {
-    if (Page != "index_noauth.html")
-        document.location = "index_noauth.html";
+    //if (Page != "index_noauth.html")
+    //     document.location = "index_noauth.html";
 }
 
 document.addEventListener("deviceready", onDeviceReady, false);
 function onDeviceReady() {
 
+}
+
+
+function parseUrlQuery(getHash) {
+    GET = {};
+
+    var url = document.location.href.split("?")[1];
+    if (!url)
+        return false;
+    var pair = url.split('&');
+    for (var i = 0; i < pair.length; i++) {
+        var param = pair[i].split('=');
+        GET[param[0]] = param[1];
+    }
+
+    return GET;
+}
+parseUrlQuery();
+
+function print_r(data) {
+    var t = new Array();
+    for (var prop in data) {
+        t.push('data[' + prop + '] - ' + (data[prop] || 'n/a'));
+    }
+    alert(t.join('\n'));
 }
 
 function getCookie(name) {
@@ -120,9 +144,27 @@ function Logout() {
     document.location = "index.html";
 }
 
+function LoadBanners(callback) {
+    $.ajax({
+        url:'http://phonegap.qulix.com/content/export/feed_id/18?callback=?',
+        dataType:'json',
+        async:false,
+        success:callback
+    });
+}
+
+function LoadServices(callback) {
+    $.ajax({
+        url:'http://phonegap.qulix.com/content/export/feed_id/17?callback=?',
+        dataType:'json',
+        async:false,
+        success:callback
+    });
+}
+
 function LoadNews(callback) {
     $.ajax({
-        url:'http://rolf-back/management/feedsmanager/feeds/export/feed_id/16?callback=?',
+        url:'http://phonegap.qulix.com/content/export/feed_id/16?callback=?',
         dataType:'json',
         async:false,
         success:callback
@@ -130,18 +172,17 @@ function LoadNews(callback) {
 }
 
 
-$('#index_page').live('pageshow', function () {
-
-    $('#toggle_auth').click(function () {
-        $('#auth_block').toggle();
+function InitHeaderEvents(page) {
+    $(page).find('#toggle_auth').click(function () {
+        $(page).find('#auth_block').toggle();
     });
 
-    $('#auth_form').submit(function () {
+    $(page).find('#auth_form').submit(function () {
 
-        var login = $('#login').val();
-        var password = $('#password').val();
+        var login = $(page).find('#login').val();
+        var password = $(page).find('#password').val();
 
-        $.getJSON("http://rolf-back/login.php?callback=?",
+        $.getJSON("http://phonegap.qulix.com/login.php?callback=?",
             { user_login:login, user_password:password },
             function (data) {
                 if (data.error.length != 0)
@@ -154,41 +195,168 @@ $('#index_page').live('pageshow', function () {
         return false;
     });
 
-    $('#toggle_profile').click(function () {
-        $('#profile_block').toggle();
+    $(page).find('#toggle_profile').click(function () {
+        $(page).find('#profile_block').toggle();
     });
 
-    $('#danger-button').click(function () {
-        $('#services_additional').toggle();
-        $('#services_block').toggle();
-        $(this).toggleClass('active');
-    });
-
-    $('#logout').click(function () {
+    $(page).find('#logout').click(function () {
         Logout();
         return false;
     });
 
-    $('#profile_name').html(getCookie('user_name'));
+    $(page).find('#profile_name').html(getCookie('user_name'));
+}
 
+$('#index_page').live('pageshow', function () {
     $.mobile.showPageLoadingMsg();
-    LoadNews(function (data) {
+    $(this).html('');
+    $.get(authUser != 0 ? 'html/index.html' : 'html/index_noauth.html', function (data) {
+        $('#index_page').html(data);
+        $('#index_page').trigger("create");
+        $('#content').hide();
+
+        InitHeaderEvents($('#index_page'));
+
+        $.mobile.showPageLoadingMsg();
+
+        LoadServices(function (data) {
+            $('#index_page #services_block .service').not('.example').remove();
             for (var ind in data) {
-                var item = $('.news-item.example').clone();
+                if (data[ind].on_main == 0) continue;
+
+                var item = $('#index_page #services_block .service.example:first').clone();
                 $(item).removeClass('example');
                 $(item).find('span').html(data[ind].header);
                 $(item).find('p').html(data[ind].content);
                 $(item).find('img').attr('src', data[ind].image);
-                $(item).appendTo('#news_block .news').show();
+                $(item).appendTo('#index_page #services_block').show();
+            }
+            LoadBanners(function (data) {
+                    $('#index_page #news_block .news .news_item').not('.example').remove();
+                    for (var ind in data) {
+                        var item = $('#index_page .news-item.example').clone();
+                        $(item).removeClass('example');
+                        $(item).find('span').html(data[ind].header);
+                        $(item).find('p').html(data[ind].content);
+                        $(item).find('img').attr('src', data[ind].image);
+                        $(item).appendTo('#index_page #news_block .news').show();
+                    }
+                    $.mobile.hidePageLoadingMsg();
+                    $('#content').show();
+                }
+            );
+        });
+
+
+    });
+});
+
+$('#news_page').live('pageshow', function () {
+    $.mobile.showPageLoadingMsg();
+    $('.news-item').not('.example').remove();
+    $(this).html('');
+    $.get(authUser != 0 ? 'html/news.html' : 'html/news_noauth.html', function (data) {
+        $('#news_page').html(data);
+        $('#news_page').trigger("create");
+        $('#content').hide();
+
+        InitHeaderEvents($('#news_page'));
+
+        $.mobile.showPageLoadingMsg();
+        LoadNews(function (data) {
+
+            for (var ind in data) {
+                var item = $('#news_page .news-item.example').clone();
+                $(item).removeClass('example');
+                $(item).find('p').html(data[ind].content);
+                $(item).find('img').attr('src', data[ind].image);
+                $(item).appendTo('#news_page #news_block').show();
             }
             $.mobile.hidePageLoadingMsg();
-
-        }
-    );
-
+            $('#content').show();
+        });
+    });
 
 });
 
+$('#services_page').live('pageshow', function () {
+    $.mobile.showPageLoadingMsg();
+    $('.service').not('.example').remove();
+    $(this).html('');
+    $.get(authUser != 0 ? 'html/services.html' : 'html/services_noauth.html', function (data) {
+        $('#services_page').html(data);
+        $('#services_page').trigger("create");
+        $('#content').hide();
+
+        InitHeaderEvents($('#services_page'));
+
+        $.mobile.showPageLoadingMsg();
+        LoadServices(function (data) {
+
+            for (var ind in data) {
+                var item = $('#services_page .service.example').clone();
+                $(item).removeClass('example');
+                $(item).find('p').html(data[ind].content);
+                $(item).find('span').html(data[ind].header);
+                $(item).find('img').attr('src', data[ind].image);
+                $(item).find('a').attr('rel', data[ind].id).attr('href', 'service_item.html?id=' + data[ind].id).click(function () {
+                    link = this;
+                    if (authUser != 0) {
+                        $('#services_page').empty().load("html/service_item.html", function () {
+                            $.ajax({
+                                url:'http://phonegap.qulix.com/content/exportItem/id/' + $(link).attr('rel') + '?callback=?',
+                                dataType:'json',
+                                async:false,
+                                success:function (data) {
+                                    $('.service-header').html(data.header);
+                                    $('.service-content').html(data.content);
+                                    $('.service-image').attr('src', data.image);
+
+                                    $('#content').show();
+                                    $.mobile.hidePageLoadingMsg();
+                                }
+                            });
+                            $('#services_page').trigger('create');
+                        });
+                    }
+                    else {
+                        $('#services_page').empty().load("html/service_item_noauth.html", function () {
+                            $('#services_page').trigger('create');
+                        });
+                    }
+
+
+                    return false;
+                });
+                $(item).appendTo('#services_page #services_block').show();
+            }
+            $.mobile.hidePageLoadingMsg();
+            $('#content').show();
+        });
+    });
+});
+
+$('#serviceitem_page').live('pageshow', function () {
+    $.mobile.showPageLoadingMsg();
+    $(this).html('');
+    $.get(authUser != 0 ? 'html/service_item.html' : 'html/service_item_noauth.html', function (data) {
+        $('#serviceitem_page').html(data);
+        $('#serviceitem_page').trigger("create");
+        $('#content').hide();
+        $.mobile.hidePageLoadingMsg();
+
+        InitHeaderEvents($('#serviceitem_page'));
+
+        if (authUser == 0) {
+            $('#content').show();
+            return true;
+        }
+
+        if (GET.id == undefined)
+            return false;
+
+    });
+});
 
 $(document).ready(function () {
     onDeviceReady();

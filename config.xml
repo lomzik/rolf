@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<widget xmlns		= "http://www.w3.org/ns/widgets"
+	xmlns:gap	= "http://phonegap.com/ns/1.7"
+	id		= "com.TestPhoneGap.PhoneGap"
+	version 	= "1.0.0">
+
+	<name>TestPhoneGap</name>
+
+	<description>
+            AnastasiaDate.com
+	</description>
+
+	<author href="http://www.qulix.com"
+		email="PDichkovsky@qulix.com">
+		Pavel Dichkovsky
+	</author>
+
+	<feature name="http://api.phonegap.com/1.7/network" />
+        <feature name="http://api.phonegap.com/1.7/file" />
+        <feature name="http://api.phonegap.com/1.7/Database" />
+        <feature name="http://api.phonegap.com/1.7/Storage" />
+
+	<preference name="orientation" value="portrait" />
+</widget>

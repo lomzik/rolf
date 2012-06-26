@@ -19,9 +19,13 @@ if (authUser == 0) {
     //     document.location = "index_noauth.html";
 }
 
+$(document).bind("mobileinit", function(){
+    $.mobile.touchOverflowEnabled = true;
+});
+
 document.addEventListener("deviceready", onDeviceReady, false);
 function onDeviceReady() {
-
+    $.mobile.touchOverflowEnabled = true;
 }
 
 
@@ -171,6 +175,15 @@ function LoadNews(callback) {
     });
 }
 
+function LoadLocator(callback) {
+    $.ajax({
+        url:'http://phonegap.qulix.com/content/apiLocator?callback=?',
+        dataType:'json',
+        async:false,
+        success:callback
+    });
+}
+
 
 function InitHeaderEvents(page) {
     $(page).find('#toggle_auth').click(function () {
@@ -207,13 +220,16 @@ function InitHeaderEvents(page) {
     $(page).find('#profile_name').html(getCookie('user_name'));
 }
 
+$('#index_page').live('pagebeforeshow', function(){
+    $(this).find('#content').hide();
+});
 $('#index_page').live('pageshow', function () {
     $.mobile.showPageLoadingMsg();
     $(this).html('');
     $.get(authUser != 0 ? 'html/index.html' : 'html/index_noauth.html', function (data) {
         $('#index_page').html(data);
         $('#index_page').trigger("create");
-        $('#content').hide();
+        $('#index_page #content').hide();
 
         InitHeaderEvents($('#index_page'));
 
@@ -229,28 +245,46 @@ $('#index_page').live('pageshow', function () {
                 $(item).find('span').html(data[ind].header);
                 $(item).find('p').html(data[ind].content);
                 $(item).find('img').attr('src', data[ind].image);
+                $(item).find('a').attr('rel', data[ind].id).attr('href', 'service_item.html?id=' + data[ind].id);
                 $(item).appendTo('#index_page #services_block').show();
             }
             LoadBanners(function (data) {
-                    $('#index_page #news_block .news .news_item').not('.example').remove();
+                    $('#index_page #news_block .news .news-item').not('.example').remove();
+                    var bannersCount = 0;
                     for (var ind in data) {
                         var item = $('#index_page .news-item.example').clone();
                         $(item).removeClass('example');
                         $(item).find('span').html(data[ind].header);
                         $(item).find('p').html(data[ind].content);
                         $(item).find('img').attr('src', data[ind].image);
-                        $(item).appendTo('#index_page #news_block .news').show();
+                        $(item).appendTo('#index_page #news_block .news');
+                        if (bannersCount++ == 0)
+                            $(item).show();
+
+                        $('#news_position').append('<em>•</em>');
                     }
+
+                    $('#news_position').find('em').first().addClass('on');
+                    $('.news-item.example').remove();
+
+                    window.mySwipe = new Swipe(document.getElementById('banner_slider'), {callback:function (e, pos) {
+                        var i = $('#news_position em').removeClass('on');
+                        $($('#news_position em').get(pos)).addClass('on');
+
+                    }
+                    });
                     $.mobile.hidePageLoadingMsg();
-                    $('#content').show();
+                    $('#index_page #content').show();
                 }
             );
         });
-
-
     });
+
 });
 
+$('#news_page').live('pagebeforeshow', function(){
+    $(this).find('#content').hide();
+});
 $('#news_page').live('pageshow', function () {
     $.mobile.showPageLoadingMsg();
     $('.news-item').not('.example').remove();
@@ -258,7 +292,7 @@ $('#news_page').live('pageshow', function () {
     $.get(authUser != 0 ? 'html/news.html' : 'html/news_noauth.html', function (data) {
         $('#news_page').html(data);
         $('#news_page').trigger("create");
-        $('#content').hide();
+        $('#news_page #content').hide();
 
         InitHeaderEvents($('#news_page'));
 
@@ -273,12 +307,109 @@ $('#news_page').live('pageshow', function () {
                 $(item).appendTo('#news_page #news_block').show();
             }
             $.mobile.hidePageLoadingMsg();
-            $('#content').show();
+            $('#news_page #content').show();
         });
     });
-
 });
 
+$('#locator_page').live('pagebeforeshow', function(){
+    $(this).find('#content').hide();
+});
+$('#locator_page').live('pageshow', function () {
+    $.mobile.showPageLoadingMsg();
+    $('.news-item').not('.example').remove();
+    $(this).html('');
+    $.get(authUser != 0 ? 'html/locator.html' : 'html/locator_noauth.html', function (data) {
+        $('#locator_page').html(data);
+        $('#locator_page').trigger("create");
+        $('#locator_page #content').hide();
+
+        InitHeaderEvents($('#locator_page'));
+
+        $.mobile.showPageLoadingMsg();
+        LoadLocator(function (data) {
+
+            $('#map').gmap({ 'disableDefaultUI':true, 'callback':function () {
+                var self = this;
+                self.getCurrentPosition(function (position, status) {
+                    if (status === 'OK') {
+                        self.set('clientPosition', new google.maps.LatLng(position.coords.latitude, position.coords.longitude));
+                        self.addMarker({'position':self.get('clientPosition'), 'bounds':true});
+                        self.addShape('Circle', { 'strokeWeight':0, 'fillColor':"#008595", 'fillOpacity':0.25, 'center':self.get('clientPosition'), 'radius':5, clickable:false });
+
+                        $.each(data, function (i, marker) {
+                            self.addMarker({
+                                'position':new google.maps.LatLng(marker.latitude, marker.longitude),
+                                'bounds':true
+                            }).click(function () {
+                                    $('#map').gmap('openInfoWindow', { 'content':marker.content }, this);
+                                });
+                        });
+
+                    }
+                });
+
+
+            }});
+
+
+            $.mobile.hidePageLoadingMsg();
+            $('#locator_page #content').show();
+        });
+    });
+});
+
+$(document).bind("pagebeforechange", function (e, data) {
+    if (typeof data.toPage === "string") {
+        var u = $.mobile.path.parseUrl(data.toPage);
+        /*  if ( u.pathname.search("service_item.html") !== -1 ) {
+         var id = u.search.substr(4);
+         ShowService( id, data.options );
+         e.preventDefault();
+         }*/
+    }
+});
+
+/*
+ function ShowService(id, options)
+ {
+ $.mobile.showPageLoadingMsg();
+ var page = $('#services_page');
+
+ $.get(authUser != 0 ? 'html/service_item.html' : 'html/service_item_noauth.html', function (data) {
+ $(page).html(data);
+ $(page).find('#content').hide();
+ $(page).page().trigger('create');
+ $.ajax({
+ url:'http://phonegap.qulix.com/content/exportItem/id/' + id + '?callback=?',
+ dataType:'json',
+ async:false,
+ success:function (data) {
+ $(page).find('.service-header').html(data.header);
+ $(page).find('.service-content').html(data.content);
+ $(page).find('.service-image').attr('src', data.image);
+
+ $(page).find('.services.footer-button').click(function(){
+ document.location = $(this).attr('href');
+ });
+
+ InitHeaderEvents($('#services_page'));
+
+ $.mobile.hidePageLoadingMsg();
+
+ $(page).attr('data-url', '/service_item.html?id=' + id);
+ $(page).find('#content').show();
+ $.mobile.changePage(page, options);
+ }
+ });
+ });
+ }
+
+ */
+
+$('#services_page').live('pagebeforeshow', function(){
+    $(this).find('#content').hide();
+});
 $('#services_page').live('pageshow', function () {
     $.mobile.showPageLoadingMsg();
     $('.service').not('.example').remove();
@@ -299,35 +430,7 @@ $('#services_page').live('pageshow', function () {
                 $(item).find('p').html(data[ind].content);
                 $(item).find('span').html(data[ind].header);
                 $(item).find('img').attr('src', data[ind].image);
-                $(item).find('a').attr('rel', data[ind].id).attr('href', 'service_item.html?id=' + data[ind].id).click(function () {
-                    link = this;
-                    if (authUser != 0) {
-                        $('#services_page').empty().load("html/service_item.html", function () {
-                            $.ajax({
-                                url:'http://phonegap.qulix.com/content/exportItem/id/' + $(link).attr('rel') + '?callback=?',
-                                dataType:'json',
-                                async:false,
-                                success:function (data) {
-                                    $('.service-header').html(data.header);
-                                    $('.service-content').html(data.content);
-                                    $('.service-image').attr('src', data.image);
-
-                                    $('#content').show();
-                                    $.mobile.hidePageLoadingMsg();
-                                }
-                            });
-                            $('#services_page').trigger('create');
-                        });
-                    }
-                    else {
-                        $('#services_page').empty().load("html/service_item_noauth.html", function () {
-                            $('#services_page').trigger('create');
-                        });
-                    }
-
-
-                    return false;
-                });
+                $(item).find('a').attr('rel', data[ind].id).attr('href', 'service_item.html?id=' + data[ind].id);
                 $(item).appendTo('#services_page #services_block').show();
             }
             $.mobile.hidePageLoadingMsg();
@@ -338,23 +441,37 @@ $('#services_page').live('pageshow', function () {
 
 $('#serviceitem_page').live('pageshow', function () {
     $.mobile.showPageLoadingMsg();
-    $(this).html('');
+    var page = this;
     $.get(authUser != 0 ? 'html/service_item.html' : 'html/service_item_noauth.html', function (data) {
-        $('#serviceitem_page').html(data);
-        $('#serviceitem_page').trigger("create");
+        $(page).html(data);
+        $(page).trigger("create");
         $('#content').hide();
-        $.mobile.hidePageLoadingMsg();
 
-        InitHeaderEvents($('#serviceitem_page'));
-
-        if (authUser == 0) {
-            $('#content').show();
-            return true;
-        }
-
+        parseUrlQuery();
         if (GET.id == undefined)
             return false;
 
+        InitHeaderEvents($('div:visible').filter('#serviceitem_page'));
+
+        if (authUser == 0) {
+            $(page).find('#content').show();
+            $.mobile.hidePageLoadingMsg();
+        }
+        else {
+            $.ajax({
+                url:'http://phonegap.qulix.com/content/exportItem/id/' + GET.id + '?callback=?',
+                dataType:'json',
+                async:false,
+                success:function (data) {
+                    $(page).find('.service-header').html(data.header);
+                    $(page).find('.service-content').html(data.content);
+                    $(page).find('.service-image').attr('src', data.image);
+
+                    $(page).find('#content').show();
+                    $.mobile.hidePageLoadingMsg();
+                }
+            });
+        }
     });
 });
 

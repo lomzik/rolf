@@ -568,7 +568,7 @@ $('#serviceitem_page').live('pageshow', function () {
         }
         else {
             $.ajax({
-                url:'http://phonegap.qulix.com/content/exportItem/id/' + GET.id + '?callback=?',
+                url:'http://phonegap.qulix.com/api/php/feeds.php?services&item=' + GET.id + '&callback=?',
                 dataType:'json',
                 async:false,
                 success:function (data) {

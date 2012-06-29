@@ -6,6 +6,24 @@ var authUser = false;
 
 // Native or Mobile
 var PhoneGap = false;
+$.getScript('phonegap.js', function() {
+    //alert('Load was performed.');
+    PhoneGap = true;
+});
+
+// Check for support localStorage true/false
+var hasLocalStorage = (function () {
+    try {
+        localStorage.setItem('a', 'a');
+        localStorage.removeItem('a');
+        return true;
+    } catch (e) {
+        return false;
+    }
+} ());
+
+// news time-out
+var newsTimeOut = 3600;
 
 // Current HTML Template
 var Page = location.pathname.substr(location.pathname.lastIndexOf('/') + 1);
@@ -15,8 +33,8 @@ var GET = {};
 // Redirect when Non-auth user
 getUserAuth();
 if (authUser == 0) {
-    //if (Page != "index_noauth.html")
-    //     document.location = "index_noauth.html";
+//if (Page != "index_noauth.html")
+//     document.location = "index_noauth.html";
 }
 
 $(document).bind("mobileinit", function () {
@@ -56,7 +74,7 @@ function print_r(data) {
 function getCookie(name) {
     var matches = document.cookie.match(new RegExp(
         "(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"
-    ));
+        ));
     return matches ? decodeURIComponent(matches[1]) : undefined
 }
 
@@ -87,7 +105,9 @@ function setCookie(name, value, props) {
 
 // удаляет cookie
 function deleteCookie(name) {
-    setCookie(name, null, { expires:-1 })
+    setCookie(name, null, {
+        expires:-1
+    })
 }
 
 function dbErrorHandler(err) {
@@ -105,27 +125,23 @@ function setupTable(tx) {
     tx.executeSql("CREATE TABLE IF NOT EXISTS LOGIN (id INTEGER PRIMARY KEY, isAuth INT)");
 }
 
+//
 function getUserAuth() {
-    if (PhoneGap) {
-        dbShell.transaction(function (tx) {
-            tx.executeSql("select id from LOGIN ", [], function (tx, result) {
-                authUser = result.rows.length ? result.rows.item(0) : 0;
-            }, dbErrorHandler);
-        }, dbErrorHandler);
+    if (hasLocalStorage) {
+        var userId = window.localStorage.getItem("auth_user");
     }
     else {
         var userId = getCookie('auth_user');
-        authUser = userId != undefined ? userId : 0;
     }
+    authUser = userId != undefined ? userId : 0;
 }
 
+//
 function setUserAuth(state, userId, userName) {
     state = state ? 1 : 0;
-    if (PhoneGap) {
-        dbShell.transaction(function (tx) {
-            tx.executeSql("DELETE FROM LOGIN WHERE id=(?)", [userId]);
-            tx.executeSql("INSERT INTO LOGIN (id) VALUES ((?))", [userId]);
-        }, dbErrorHandler);
+    if (hasLocalStorage) {
+        window.localStorage.setItem("auth_user", userId);
+        window.localStorage.setItem("user_name", userName);
     }
     else {
         setCookie("auth_user", userId);
@@ -143,8 +159,16 @@ function AuthFail(error) {
     alert(error);
 }
 
+//
 function Logout() {
-    deleteCookie("auth_user");
+    if (hasLocalStorage) {
+        window.localStorage.removeItem("auth_user");
+        window.localStorage.removeItem("user_name");
+    }
+    else {
+        deleteCookie("auth_user");
+        deleteCookie("user_name");
+    }
     document.location = "index.html";
 }
 
@@ -167,12 +191,20 @@ function LoadServices(callback) {
 }
 
 function LoadNews(callback) {
-    $.ajax({
-        url:'http://phonegap.qulix.com/content/export/feed_id/16?callback=?',
-        dataType:'json',
-        async:false,
-        success:callback
-    });
+    if(PhoneGap) {
+
+    } else {
+        if(hasLocalStorage) {
+            // 
+        } else {
+            $.ajax({
+                url:'http://phonegap.qulix.com/content/export/feed_id/16?callback=?',
+                dataType:'json',
+                async:false,
+                success:callback
+            });
+        }
+    }
 }
 
 function LoadLocator(callback) {
@@ -196,14 +228,17 @@ function InitHeaderEvents(page) {
         var password = $(page).find('#password').val();
 
         $.getJSON("http://phonegap.qulix.com/login.php?callback=?",
-            { user_login:login, user_password:password },
-            function (data) {
-                if (data.error.length != 0)
-                    AuthFail(data.error);
-                else {
-                    AuthSuccess(data.userId, data.name);
-                }
-            });
+        {
+            user_login:login,
+            user_password:password
+        },
+        function (data) {
+            if (data.error.length != 0)
+                AuthFail(data.error);
+            else {
+                AuthSuccess(data.userId, data.name);
+            }
+        });
 
         return false;
     });
@@ -252,33 +287,34 @@ $('#index_page').live('pageshow', function () {
 
             }
             LoadBanners(function (data) {
-                    $('#index_page #news_block .news .news-item').not('.example').remove();
-                    var bannersCount = 0;
-                    for (var ind in data) {
-                        var item = $('#index_page .news-item.example').clone();
-                        $(item).removeClass('example');
-                        $(item).find('span').html(data[ind].header);
-                        $(item).find('p').html(data[ind].content);
-                        $(item).find('img').attr('src', data[ind].image);
-                        $(item).appendTo('#index_page #news_block .news');
-                        if (bannersCount++ == 0)
-                            $(item).show();
+                $('#index_page #news_block .news .news-item').not('.example').remove();
+                var bannersCount = 0;
+                for (var ind in data) {
+                    var item = $('#index_page .news-item.example').clone();
+                    $(item).removeClass('example');
+                    $(item).find('span').html(data[ind].header);
+                    $(item).find('p').html(data[ind].content);
+                    $(item).find('img').attr('src', data[ind].image);
+                    $(item).appendTo('#index_page #news_block .news');
+                    if (bannersCount++ == 0)
+                        $(item).show();
 
-                        $('#news_position').append('<em>•</em>');
-                    }
+                    $('#news_position').append('<em>•</em>');
+                }
 
-                    $('#news_position').find('em').first().addClass('on');
-                    $('.news-item.example').remove();
+                $('#news_position').find('em').first().addClass('on');
+                $('.news-item.example').remove();
 
-                    window.mySwipe = new Swipe(document.getElementById('banner_slider'), {callback:function (e, pos) {
+                window.mySwipe = new Swipe(document.getElementById('banner_slider'), {
+                    callback:function (e, pos) {
                         var i = $('#news_position em').removeClass('on');
                         $($('#news_position em').get(pos)).addClass('on');
 
                     }
-                    });
-                    $.mobile.hidePageLoadingMsg();
-                    $('#index_page #content').show();
-                }
+                });
+                $.mobile.hidePageLoadingMsg();
+                $('#index_page #content').show();
+            }
             );
         });
     });
@@ -332,31 +368,46 @@ $('#locator_page').live('pageshow', function () {
         $.mobile.showPageLoadingMsg();
         LoadLocator(function (data) {
 
-            $('#map').gmap({ 'disableDefaultUI':true, 'callback':function () {
-                var self = this;
-                self.getCurrentPosition(function (position, status) {
-                    if (status === 'OK') {
-                        self.set('clientPosition', new google.maps.LatLng(position.coords.latitude, position.coords.longitude));
-                        self.addMarker({'position':self.get('clientPosition'), 'bounds':true});
-                        self.addShape('Circle', { 'strokeWeight':0, 'fillColor':"#008595", 'fillOpacity':0.25, 'center':self.get('clientPosition'), 'radius':5, clickable:false });
-
-                        $.each(data, function (i, marker) {
+            $('#map').gmap({
+                'disableDefaultUI':true,
+                'callback':function () {
+                    var self = this;
+                    self.getCurrentPosition(function (position, status) {
+                        if (status === 'OK') {
+                            self.set('clientPosition', new google.maps.LatLng(position.coords.latitude, position.coords.longitude));
                             self.addMarker({
-                                'position':new google.maps.LatLng(marker.latitude, marker.longitude),
+                                'position':self.get('clientPosition'),
                                 'bounds':true
-                            }).click(function () {
-                                    $('#map').gmap('openInfoWindow', { 'content':marker.content }, this);
+                            });
+                            self.addShape('Circle', {
+                                'strokeWeight':0,
+                                'fillColor':"#008595",
+                                'fillOpacity':0.25,
+                                'center':self.get('clientPosition'),
+                                'radius':5,
+                                clickable:false
+                            });
+
+                            $.each(data, function (i, marker) {
+                                self.addMarker({
+                                    'position':new google.maps.LatLng(marker.latitude, marker.longitude),
+                                    'bounds':true
+                                }).click(function () {
+                                    $('#map').gmap('openInfoWindow', {
+                                        'content':marker.content
+                                    }, this);
                                 });
-                        });
+                            });
 
-                    }
-                });
-
-
-            }});
+                        }
+                    });
 
 
-            $.mobile.hidePageLoadingMsg();
+                }
+            });
+
+
+        $.mobile.hidePageLoadingMsg();
             $('#locator_page #content').show();
         });
     });
@@ -365,7 +416,7 @@ $('#locator_page').live('pageshow', function () {
 $(document).bind("pagebeforechange", function (e, data) {
     if (typeof data.toPage === "string") {
         var u = $.mobile.path.parseUrl(data.toPage);
-        /*  if ( u.pathname.search("service_item.html") !== -1 ) {
+    /*  if ( u.pathname.search("service_item.html") !== -1 ) {
          var id = u.search.substr(4);
          ShowService( id, data.options );
          e.preventDefault();

@@ -1,24 +1,47 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <widget xmlns		= "http://www.w3.org/ns/widgets"
-	xmlns:gap	= "http://phonegap.com/ns/1.7"
-	id		= "com.TestPhoneGap.PhoneGap"
-	version 	= "1.0.0">
+        xmlns:gap	= "http://phonegap.com/ns/1.1"
+        id		= "com.AnastasiaDate.PhoneGap"
+        version 	= "0.0.1">
 
-	<name>TestPhoneGap</name>
+    <name>AnastasiaDatePhoneGap</name>
 
-	<description>
-            AnastasiaDate.com
-	</description>
+    <description>
+        AnastasiaDate.com
+    </description>
 
-	<author href="http://www.qulix.com"
-		email="PDichkovsky@qulix.com">
-		Pavel Dichkovsky
-	</author>
+    <author href="http://www.qulix.com"
+            email="PDichkovsky@qulix.com">
+        Pavel Dichkovsky
+    </author>
 
-	<feature name="http://api.phonegap.com/1.7/network" />
-        <feature name="http://api.phonegap.com/1.7/file" />
-        <feature name="http://api.phonegap.com/1.7/Database" />
-        <feature name="http://api.phonegap.com/1.7/Storage" />
+    <preference name="phonegap-version" value="1.8.1" />
 
-	<preference name="orientation" value="portrait" />
+    <!-- Icons -->
+
+    <icon src="icon.png" />
+    <icon src="icons/ios/icon.png" width="57" height="57" />
+    <icon src="icons/ios/icon-72.png" gap:platform="ios" width="72" height="72" />
+    <icon src="icons/ios/icon_at_2x.png" width="114" height="114" />
+    <icon src="icons/android/ldpi.png" gap:platform="android" gap:density="ldpi" />
+    <icon src="icons/android/mdpi.png" gap:platform="android" gap:density="mdpi" />
+    <icon src="icons/android/hdpi.png" gap:platform="android" gap:density="hdpi" />
+
+    <!-- Splash Screens -->
+    <gap:splash src="splash.png" />
+    <gap:splash src="splash/ios/Default-Landscape.png" width="1024" height="768" />
+    <gap:splash src="splash/ios/Default-Portrait.png" width="768" height="1024" />
+    <gap:splash src="splash/ios/Default.png" width="320" height="480" />
+    <gap:splash src="splash/ios/Default_at_2x.png" width="640" height="960" />
+    <gap:splash src="splash/android/ldpi.png" gap:platform="android" gap:density="ldpi" />
+    <gap:splash src="splash/android/mdpi.png" gap:platform="android" gap:density="mdpi" />
+    <gap:splash src="splash/android/hdpi.png" gap:platform="android" gap:density="hdpi" />
+
+    <feature name="http://api.phonegap.com/1.8.1/network" />
+    <feature name="http://api.phonegap.com/1.8.1/file" />
+    <feature name="http://api.phonegap.com/1.8.1/database" />
+    <feature name="http://api.phonegap.com/1.8.1/storage" />
+    <feature name="http://api.phonegap.com/1.8.1/geolocation" />
+
+    <preference name="orientation" value="portrait" />
 </widget>

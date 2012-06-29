@@ -243,7 +243,19 @@ body {
     text-shadow: none;
 }
 
-#services_block .service {
+#services_block .service:hover{
+    background: #ddd;
+}
+
+#services_block .service a{
+    display: block;
+}
+
+#services_block .service a:hover{
+    text-decoration: none;
+}
+
+.service {
     background: #fff;
     padding: 5px 0 10px 0;
     border-left: 1px solid #d1d1d1;
@@ -260,26 +272,26 @@ body {
     border-radius: 0 0 4px 4px;
 }
 
-#services_block .service .service-image {
+.service .service-image {
     width: 100px;
     float: left;
     text-align: center;
     margin-right: 5px;
 }
 
-#services_block .service .service-content-block {
+.service .service-content-block {
     padding-bottom: 10px;
     margin: 0 10px 0 55px;
     color: #969696;
 }
 
-#services_block .service span {
+.service span {
     color: #272727;
     font-weight: bold;
     margin-bottom: 7px;
 }
 
-#services_block .service p {
+.service p {
     color: #969696;
     font-size: 12px;
     margin-top: 5px;
@@ -446,3 +458,13 @@ body{
 }
 
 .ui-page{min-height: inherit !important;}
+
+.noauth-warning{
+    padding: 15px;
+    font-size: 28px;
+    text-align: center;
+}
+
+#service_item{
+    padding-left: 10px;
+}

@@ -19,7 +19,7 @@ if (authUser == 0) {
     //     document.location = "index_noauth.html";
 }
 
-$(document).bind("mobileinit", function(){
+$(document).bind("mobileinit", function () {
     $.mobile.touchOverflowEnabled = true;
 });
 
@@ -220,9 +220,10 @@ function InitHeaderEvents(page) {
     $(page).find('#profile_name').html(getCookie('user_name'));
 }
 
-$('#index_page').live('pagebeforeshow', function(){
+$('#index_page').live('pagebeforeshow', function () {
     $(this).find('#content').hide();
 });
+
 $('#index_page').live('pageshow', function () {
     $.mobile.showPageLoadingMsg();
     $(this).html('');
@@ -237,6 +238,7 @@ $('#index_page').live('pageshow', function () {
 
         LoadServices(function (data) {
             $('#index_page #services_block .service').not('.example').remove();
+
             for (var ind in data) {
                 if (data[ind].on_main == 0) continue;
 
@@ -247,6 +249,7 @@ $('#index_page').live('pageshow', function () {
                 $(item).find('img').attr('src', data[ind].image);
                 $(item).find('a').attr('rel', data[ind].id).attr('href', 'service_item.html?id=' + data[ind].id);
                 $(item).appendTo('#index_page #services_block').show();
+
             }
             LoadBanners(function (data) {
                     $('#index_page #news_block .news .news-item').not('.example').remove();
@@ -282,7 +285,7 @@ $('#index_page').live('pageshow', function () {
 
 });
 
-$('#news_page').live('pagebeforeshow', function(){
+$('#news_page').live('pagebeforeshow', function () {
     $(this).find('#content').hide();
 });
 $('#news_page').live('pageshow', function () {
@@ -312,7 +315,7 @@ $('#news_page').live('pageshow', function () {
     });
 });
 
-$('#locator_page').live('pagebeforeshow', function(){
+$('#locator_page').live('pagebeforeshow', function () {
     $(this).find('#content').hide();
 });
 $('#locator_page').live('pageshow', function () {
@@ -407,7 +410,7 @@ $(document).bind("pagebeforechange", function (e, data) {
 
  */
 
-$('#services_page').live('pagebeforeshow', function(){
+$('#services_page').live('pagebeforeshow', function () {
     $(this).find('#content').hide();
 });
 $('#services_page').live('pageshow', function () {
@@ -432,6 +435,9 @@ $('#services_page').live('pageshow', function () {
                 $(item).find('img').attr('src', data[ind].image);
                 $(item).find('a').attr('rel', data[ind].id).attr('href', 'service_item.html?id=' + data[ind].id);
                 $(item).appendTo('#services_page #services_block').show();
+                $(item).click(function () {
+                    $(this).find('a').click();
+                });
             }
             $.mobile.hidePageLoadingMsg();
             $('#content').show();

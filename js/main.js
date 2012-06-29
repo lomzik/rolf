@@ -22,8 +22,16 @@ var hasLocalStorage = (function () {
     }
 } ());
 
-// news time-out
-var newsTimeOut = 3600;
+// Curent Date
+var date = new Date();
+// Number of milliseconds since 01.01.1970.
+var currentTime = date.getTime();
+
+// Content time-out's, for read from localStorage or from Internet with API
+var newsTimeOut = 3600*1000;
+var servicesTimeOut = 3600*24*1000;
+var bannersTimeOut = 3600*1000;
+var locatorTimeOut = 3600*24*1000;
 
 // Current HTML Template
 var Page = location.pathname.substr(location.pathname.lastIndexOf('/') + 1);
@@ -173,47 +181,91 @@ function Logout() {
 }
 
 function LoadBanners(callback) {
-    $.ajax({
-        url:'http://phonegap.qulix.com/api/php/feeds.php?banners&callback=?',
-        dataType:'json',
-        async:false,
-        success:callback
-    });
+    if(PhoneGap) {
+
+    } else {
+        if(hasLocalStorage && currentTime < window.localStorage.getItem("bannersWritingTime") + bannersTimeOut) {
+            var data = JSON.parse(window.localStorage.getItem("banners"));
+            callback(data);
+        } else {
+            $.ajax({
+                url:'http://phonegap.qulix.com/api/php/feeds.php?banners&callback=?',
+                dataType:'json',
+                async:false,
+                success: function(data){
+                    window.localStorage.setItem("banners", JSON.stringify(data));
+                    window.localStorage.setItem("bannersWritingTime", currentTime);
+                    callback(data);
+                }
+            });
+        }
+    }
 }
 
 function LoadServices(callback) {
-    $.ajax({
-        url:'http://phonegap.qulix.com/api/php/feeds.php?services&callback=?',
-        dataType:'json',
-        async:false,
-        success:callback
-    });
+    if(PhoneGap) {
+
+    } else {
+        if(hasLocalStorage && currentTime < window.localStorage.getItem("servicesWritingTime") + servicesTimeOut) {
+            var data = JSON.parse(window.localStorage.getItem("services"));
+            callback(data);
+        } else {
+            $.ajax({
+                url:'http://phonegap.qulix.com/api/php/feeds.php?services&callback=?',
+                dataType:'json',
+                async:false,
+                success: function(data){
+                    window.localStorage.setItem("services", JSON.stringify(data));
+                    window.localStorage.setItem("servicesWritingTime", currentTime);
+                    callback(data);
+                }
+            });
+        }
+    }
 }
 
 function LoadNews(callback) {
     if(PhoneGap) {
 
     } else {
-        if(hasLocalStorage) {
-            // 
+        if(hasLocalStorage && currentTime < window.localStorage.getItem("newsWritingTime") + newsTimeOut) {
+            var data = JSON.parse(window.localStorage.getItem("news"));
+            callback(data);
         } else {
             $.ajax({
                 url:'http://phonegap.qulix.com/api/php/feeds.php?news&callback=?',
                 dataType:'json',
                 async:false,
-                success:callback
+                success: function(data){
+                    window.localStorage.setItem("news", JSON.stringify(data));
+                    window.localStorage.setItem("newsWritingTime", currentTime);
+                    callback(data);
+                }
             });
         }
     }
 }
 
 function LoadLocator(callback) {
-    $.ajax({
-        url:'http://phonegap.qulix.com/api/php/feeds.php?locator&callback=?',
-        dataType:'json',
-        async:false,
-        success:callback
-    });
+    if(PhoneGap) {
+
+    } else {
+        if(hasLocalStorage && currentTime < window.localStorage.getItem("locatorWritingTime") + locatorTimeOut) {
+            var data = JSON.parse(window.localStorage.getItem("locator"));
+            callback(data);
+        } else {
+            $.ajax({
+                url:'http://phonegap.qulix.com/api/php/feeds.php?locator&callback=?',
+                dataType:'json',
+                async:false,
+                success: function(data){
+                    window.localStorage.setItem("locator", JSON.stringify(data));
+                    window.localStorage.setItem("locatorWritingTime", currentTime);
+                    callback(data);
+                }
+            });
+        }
+    }
 }
 
 
@@ -299,7 +351,7 @@ $('#index_page').live('pageshow', function () {
                     if (bannersCount++ == 0)
                         $(item).show();
 
-                    $('#news_position').append('<em>•</em>');
+                    $('#news_position').append('<em>&bull;</em>');
                 }
 
                 $('#news_position').find('em').first().addClass('on');
@@ -407,7 +459,7 @@ $('#locator_page').live('pageshow', function () {
             });
 
 
-        $.mobile.hidePageLoadingMsg();
+            $.mobile.hidePageLoadingMsg();
             $('#locator_page #content').show();
         });
     });

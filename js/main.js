@@ -174,7 +174,7 @@ function Logout() {
 
 function LoadBanners(callback) {
     $.ajax({
-        url:'http://phonegap.qulix.com/content/export/feed_id/18?callback=?',
+        url:'http://phonegap.qulix.com/api/php/feeds.php?banners&callback=?',
         dataType:'json',
         async:false,
         success:callback
@@ -183,7 +183,7 @@ function LoadBanners(callback) {
 
 function LoadServices(callback) {
     $.ajax({
-        url:'http://phonegap.qulix.com/content/export/feed_id/17?callback=?',
+        url:'http://phonegap.qulix.com/api/php/feeds.php?services&callback=?',
         dataType:'json',
         async:false,
         success:callback
@@ -198,7 +198,7 @@ function LoadNews(callback) {
             // 
         } else {
             $.ajax({
-                url:'http://phonegap.qulix.com/content/export/feed_id/16?callback=?',
+                url:'http://phonegap.qulix.com/api/php/feeds.php?news&callback=?',
                 dataType:'json',
                 async:false,
                 success:callback
@@ -209,7 +209,7 @@ function LoadNews(callback) {
 
 function LoadLocator(callback) {
     $.ajax({
-        url:'http://phonegap.qulix.com/content/apiLocator?callback=?',
+        url:'http://phonegap.qulix.com/api/php/feeds.php?locator&callback=?',
         dataType:'json',
         async:false,
         success:callback

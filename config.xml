@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <widget xmlns		= "http://www.w3.org/ns/widgets"
         xmlns:gap	= "http://phonegap.com/ns/1.1"
-        id		= "com.AnastasiaDate.PhoneGap"
+        id		= "com.qulix.phonegap.rolf"
         version 	= "0.0.1">
 
-    <name>AnastasiaDatePhoneGap</name>
+    <name>Rolf</name>
 
     <description>
-        AnastasiaDate.com
+        phonegap.qulix.com
     </description>
 
     <author href="http://www.qulix.com"

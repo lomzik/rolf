@@ -143,48 +143,21 @@ body {
 }
 
 #footer .footer-button {
-    float: left;
-    width: 25%;
-    background: transparent;
-    border: none;
-    display: block;
-    vertical-align: bottom;
-    margin: 2px 0;
-    text-align: center;
-    padding-top: 30px;
-    color: #4a4a54;
-    font-size: 10px;
-    font-family: Arial;
 }
 
 #footer .footer-button span{
-    font-size: 10px;
-    color: #4a4a54;
+
 }
 
 #footer .footer-button:hover{
     text-decoration: none;
 }
 
-#footer .footer-button.start {
-    background: url('../img/bg_flag.png') no-repeat top center;
-}
-
-#footer .footer-button.news {
-    background: url('../img/bg_service.png') no-repeat top center;
-}
-
-#footer .footer-button.services {
-    background: url('../img/bg_service.png') no-repeat top center;
-}
-
-#footer .footer-button.locator {
-    background: url('../img/bg_service.png') no-repeat top center;
-}
-
-#footer .footer-button.settings {
-    background: url('../img/bg_service.png') no-repeat top center;
-}
+#footer  .ui-icon{border-radius: 0; width:42px; height:31px;  }
+#footer #mainFooterIcon .ui-icon { background:  url(../img/icons/icon_general.png) 50% 50% no-repeat;}
+#footer #newsFooterIcon .ui-icon { background:  url(../img/icons/icon_news.png) 50% 50% no-repeat;;  }
+#footer #servicesFooterIcon .ui-icon { background:  url(../img/icons/icon_srvises.png) 50% 50% no-repeat;; }
+#footer #locatorFooterIcon .ui-icon { background:  url(../img/icons/icon_locator.png) 50% 50% no-repeat;; }
 
 #news_block_wr{
     background: url('../img/news_bg.png') repeat;
@@ -207,6 +180,12 @@ body {
     border-radius: 0 0 4px 4px;
     height: 112px;
     padding: 14px 5px;
+}
+
+#news_block .news-content h2{
+    color: #000;
+    text-align: left;
+    padding-bottom: 6px;
 }
 
 #news_block .news-image {

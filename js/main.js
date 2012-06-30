@@ -326,33 +326,33 @@ $('#index_page').live('pageshow', function () {
         LoadServices(function (data) {
             $('#index_page #services_block .service').not('.example').remove();
 
+            var html = '';
             for (var ind in data) {
                 if (data[ind].on_main == 0) continue;
 
                 var item = $('#index_page #services_block .service.example:first').clone();
-                $(item).removeClass('example');
                 $(item).find('span').html(data[ind].header);
                 $(item).find('p').html(data[ind].content);
                 $(item).find('img').attr('src', data[ind].image);
                 $(item).find('a').attr('rel', data[ind].id).attr('href', 'service_item.html?id=' + data[ind].id);
-                $(item).appendTo('#index_page #services_block').show();
-
+                html += '<div class="service">' + $(item).html() + '</div>';
             }
+            $('#index_page #services_block').append(html);
             LoadBanners(function (data) {
                 $('#index_page #news_block .news .news-item').not('.example').remove();
                 var bannersCount = 0;
+                var html = '';
                 for (var ind in data) {
                     var item = $('#index_page .news-item.example').clone();
                     $(item).removeClass('example');
                     $(item).find('span').html(data[ind].header);
                     $(item).find('p').html(data[ind].content);
                     $(item).find('img').attr('src', data[ind].image);
-                    $(item).appendTo('#index_page #news_block .news');
-                    if (bannersCount++ == 0)
-                        $(item).show();
-
+                    html += '<div class="news-item" style="display:' + (bannersCount++ == 0 ? 'block' : 'none')+ '">' + $(item).html() + '</div>';
                     $('#news_position').append('<em>&bull;</em>');
                 }
+
+                $('#index_page #news_block .news').append(html);
 
                 $('#news_position').find('em').first().addClass('on');
                 $('.news-item.example').remove();
@@ -389,14 +389,15 @@ $('#news_page').live('pageshow', function () {
 
         $.mobile.showPageLoadingMsg();
         LoadNews(function (data) {
-
+            var html = '';
             for (var ind in data) {
                 var item = $('#news_page .news-item.example').clone();
-                $(item).removeClass('example');
                 $(item).find('p').html(data[ind].content);
+                $(item).find('h2').html(data[ind].header);
                 $(item).find('img').attr('src', data[ind].image);
-                $(item).appendTo('#news_page #news_block').show();
+                html += '<div class="news-item">' + $(item).html() + '</div>';
             }
+            $('#news_page #news_block').append(html);
             $.mobile.hidePageLoadingMsg();
             $('#news_page #content').show();
         });
@@ -530,18 +531,19 @@ $('#services_page').live('pageshow', function () {
         $.mobile.showPageLoadingMsg();
         LoadServices(function (data) {
 
+            var html = '';
             for (var ind in data) {
                 var item = $('#services_page .service.example').clone();
-                $(item).removeClass('example');
                 $(item).find('p').html(data[ind].content);
                 $(item).find('span').html(data[ind].header);
                 $(item).find('img').attr('src', data[ind].image);
                 $(item).find('a').attr('rel', data[ind].id).attr('href', 'service_item.html?id=' + data[ind].id);
-                $(item).appendTo('#services_page #services_block').show();
+                html += '<div class="service">' + $(item).html() + '</div>';
                 $(item).click(function () {
                     $(this).find('a').click();
                 });
             }
+            $('#services_page #services_block').append(html);
             $.mobile.hidePageLoadingMsg();
             $('#content').show();
         });

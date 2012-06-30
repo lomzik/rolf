@@ -48,9 +48,9 @@
 
 
             <div id="banner_slider">
-                <b class="header">Новости</b>
                 <ul class="news">
                     <li class="news-item example" style="display:none">
+                        <b class="header">Новости</b>
                         <div class="news-image">
                             <img src=""/>
                         </div>
@@ -69,10 +69,13 @@
 </div>
 
 <div id="footer" data-tap-toggle="false" data-role="footer" data-position="fixed">
-<a href="index.html" class="footer-button start">Стартовая</a>
-<a href="news.html" class="footer-button news">Новости</a>
-<a href="services.html" class="footer-button services">Сервисы</a>
-<a href="locator.html" data-ajax="false" class="footer-button locator">Локатор</a>
-<br clear="all"/>
+    <div id="footer-navigation" data-iconpos="top" data-role="navbar">
+        <ul>
+            <li><a href="index.html" id="mainFooterIcon" data-icon="custom" class="footer-button start">Стартовая</a></li>
+            <li><a href="news.html" id="newsFooterIcon" data-icon="custom" class="footer-button news">Новости</a></li>
+            <li><a href="services.html" id="servicesFooterIcon" data-icon="custom" class="footer-button services">Сервисы</a></li>
+            <li><a href="locator.html" id="locatorFooterIcon" data-icon="custom" data-ajax="false" class="footer-button locator">Локатор</a></li>
+        </ul>
+    </div>
 </div>
 </div>

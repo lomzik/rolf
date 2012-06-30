@@ -326,24 +326,25 @@ $('#index_page').live('pageshow', function () {
         LoadServices(function (data) {
             $('#index_page #services_block .service').not('.example').remove();
 
+            var html = '';
             for (var ind in data) {
                 if (data[ind].on_main == 0) continue;
 
                 var item = $('#index_page #services_block .service.example:first').clone();
-                $(item).removeClass('example');
                 $(item).find('span').html(data[ind].header);
                 $(item).find('p').html(data[ind].content);
                 $(item).find('img').attr('src', data[ind].image);
                 $(item).find('a').attr('rel', data[ind].id).attr('href', 'service_item.html?id=' + data[ind].id);
                 $(item).appendTo('#index_page #services_block').show();
-
+                html += '<div class="service">' + $(item).html() + '</div>';
             }
+            $("#index_page #services_block").append(html);
+
             LoadBanners(function (data) {
                 $('#index_page #news_block .news .news-item').not('.example').remove();
                 var bannersCount = 0;
                 for (var ind in data) {
                     var item = $('#index_page .news-item.example').clone();
-                    $(item).removeClass('example');
                     $(item).find('span').html(data[ind].header);
                     $(item).find('p').html(data[ind].content);
                     $(item).find('img').attr('src', data[ind].image);
@@ -352,7 +353,10 @@ $('#index_page').live('pageshow', function () {
                         $(item).show();
 
                     $('#news_position').append('<em>&bull;</em>');
+                    html += '<div style="display:' + (bannersCount++ == 0 ? 'block' : 'none') + '">' + $(item).html() + '</div>';
                 }
+
+                $('#index_page #news_block .news').append(html);
 
                 $('#news_position').find('em').first().addClass('on');
                 $('.news-item.example').remove();
@@ -373,6 +377,37 @@ $('#index_page').live('pageshow', function () {
 
 });
 
+$('#news_page').live('pagebeforeshow', function () {
+    $(this).find('#content').hide();
+});
+$('#news_page').live('pageshow', function () {
+    $.mobile.showPageLoadingMsg();
+    $('.news-item').not('.example').remove();
+    $(this).html('');
+    $.get(authUser != 0 ? 'html/news.html' : 'html/news_noauth.html', function (data) {
+        $('#news_page').html(data);
+        $('#news_page').trigger("create");
+        $('#news_page #content').hide();
+
+        InitHeaderEvents($('#news_page'));
+
+        $.mobile.showPageLoadingMsg();
+        var html = '';
+        LoadNews(function (data) {
+
+            for (var ind in data) {
+                var item = $('#news_page .news-item.example').clone();
+                $(item).find('h2').html(data[ind].header);
+                $(item).find('p').html(data[ind].content);
+                $(item).find('img').attr('src', data[ind].image);
+                html += '<div class="news-item">' + $(item).html() + '</div>';
+            }
+            $('#news_page #news_block').append(html);
+            $.mobile.hidePageLoadingMsg();
+            $('#news_page #content').show();
+        });
+    });
+});
 
 $('#locator_page').live('pagebeforeshow', function () {
     $(this).find('#content').hide();
@@ -436,18 +471,16 @@ $('#locator_page').live('pageshow', function () {
     });
 });
 
-/*
 $(document).bind("pagebeforechange", function (e, data) {
     if (typeof data.toPage === "string") {
         var u = $.mobile.path.parseUrl(data.toPage);
-      if ( u.pathname.search("service_item.html") !== -1 ) {
+    /*  if ( u.pathname.search("service_item.html") !== -1 ) {
          var id = u.search.substr(4);
          ShowService( id, data.options );
          e.preventDefault();
-         }
+         }*/
     }
 });
-*/
 
 /*
  function ShowService(id, options)
@@ -486,41 +519,10 @@ $(document).bind("pagebeforechange", function (e, data) {
 
  */
 
-$('#news_page').live('pagebeforeshow', function () {
-    $(this).find('#content').hide();
-    $.mobile.showPageLoadingMsg();
-    $('.news-item').not('.example').remove();
-    $(this).html('');
-    $.get(authUser != 0 ? 'html/news.html' : 'html/news_noauth.html', function (data) {
-        $('#news_page').html(data);
-        $('#news_page').trigger("create");
-        //$('#news_page #content').hide();
-
-        InitHeaderEvents($('#news_page'));
-
-        //$.mobile.showPageLoadingMsg();
-        LoadNews(function (data) {
-
-            for (var ind in data) {
-                var item = $('#news_page .news-item.example').clone();
-                $(item).removeClass('example');
-                $(item).find('p').html(data[ind].content);
-                $(item).find('img').attr('src', data[ind].image);
-                $(item).appendTo('#news_page #news_block').show();
-            }
-            $.mobile.hidePageLoadingMsg();
-            $('#news_page #content').show();
-        });
-    });
-});
-/*
-$('#news_page').live('pageshow', function () {
-});
-*/
-
-
 $('#services_page').live('pagebeforeshow', function () {
     $(this).find('#content').hide();
+});
+$('#services_page').live('pageshow', function () {
     $.mobile.showPageLoadingMsg();
     $('.service').not('.example').remove();
     $(this).html('');
@@ -531,27 +533,25 @@ $('#services_page').live('pagebeforeshow', function () {
 
         InitHeaderEvents($('#services_page'));
 
-        //$.mobile.showPageLoadingMsg();
+        $.mobile.showPageLoadingMsg();
         LoadServices(function (data) {
-
+            var html = '';
             for (var ind in data) {
                 var item = $('#services_page .service.example').clone();
-                $(item).removeClass('example');
                 $(item).find('p').html(data[ind].content);
                 $(item).find('span').html(data[ind].header);
                 $(item).find('img').attr('src', data[ind].image);
                 $(item).find('a').attr('rel', data[ind].id).attr('href', 'service_item.html?id=' + data[ind].id);
-                $(item).appendTo('#services_page #services_block').show();
                 $(item).click(function () {
                     $(this).find('a').click();
                 });
+                html += '<div class="service">' + $(item).html() + '</div>';
             }
+            $('#services_page #services_block').html(html);
             $.mobile.hidePageLoadingMsg();
             $('#content').show();
         });
     });
-});
-$('#services_page').live('pageshow', function () {
 });
 
 $('#serviceitem_page').live('pageshow', function () {
@@ -574,7 +574,7 @@ $('#serviceitem_page').live('pageshow', function () {
         }
         else {
             $.ajax({
-                url:'http://phonegap.qulix.com/content/exportItem/id/' + GET.id + '?callback=?',
+                url:'http://phonegap.qulix.com/api/php/feeds.php?services&item=' + GET.id + '&callback=?',
                 dataType:'json',
                 async:false,
                 success:function (data) {

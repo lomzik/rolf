@@ -335,7 +335,6 @@ $('#index_page').live('pageshow', function () {
                 $(item).find('p').html(data[ind].content);
                 $(item).find('img').attr('src', data[ind].image);
                 $(item).find('a').attr('rel', data[ind].id).attr('href', 'service_item.html?id=' + data[ind].id);
-                $(item).appendTo('#index_page #services_block').show();
                 html += '<div class="service">' + $(item).html() + '</div>';
             }
             $("#index_page #services_block").append(html);
@@ -343,12 +342,12 @@ $('#index_page').live('pageshow', function () {
             LoadBanners(function (data) {
                 $('#index_page #news_block .news .news-item').not('.example').remove();
                 var bannersCount = 0;
+                    html = '';
                 for (var ind in data) {
                     var item = $('#index_page .news-item.example').clone();
                     $(item).find('span').html(data[ind].header);
                     $(item).find('p').html(data[ind].content);
                     $(item).find('img').attr('src', data[ind].image);
-                    $(item).appendTo('#index_page #news_block .news');
                     if (bannersCount++ == 0)
                         $(item).show();
 

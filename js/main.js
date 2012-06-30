@@ -29,7 +29,7 @@ var currentTime = date.getTime();
 
 // Content time-out's, for read from localStorage or from Internet with API
 var newsTimeOut = 3600*1000;
-var servicesTimeOut = 3600*24*1000;
+var servicesTimeOut = 3600*12*1000;
 var bannersTimeOut = 3600*1000;
 var locatorTimeOut = 3600*24*1000;
 
@@ -184,7 +184,7 @@ function LoadBanners(callback) {
     if(PhoneGap) {
 
     } else {
-        if(hasLocalStorage && currentTime < window.localStorage.getItem("bannersWritingTime") + bannersTimeOut) {
+        if(hasLocalStorage && currentTime < parseInt(window.localStorage.getItem("bannersWritingTime")) + bannersTimeOut) {
             var data = JSON.parse(window.localStorage.getItem("banners"));
             callback(data);
         } else {
@@ -206,7 +206,7 @@ function LoadServices(callback) {
     if(PhoneGap) {
 
     } else {
-        if(hasLocalStorage && currentTime < window.localStorage.getItem("servicesWritingTime") + servicesTimeOut) {
+        if(hasLocalStorage && currentTime < parseInt(window.localStorage.getItem("servicesWritingTime")) + servicesTimeOut) {
             var data = JSON.parse(window.localStorage.getItem("services"));
             callback(data);
         } else {
@@ -228,7 +228,7 @@ function LoadNews(callback) {
     if(PhoneGap) {
 
     } else {
-        if(hasLocalStorage && currentTime < window.localStorage.getItem("newsWritingTime") + newsTimeOut) {
+        if(hasLocalStorage && currentTime < parseInt(window.localStorage.getItem("newsWritingTime")) + newsTimeOut) {
             var data = JSON.parse(window.localStorage.getItem("news"));
             callback(data);
         } else {
@@ -250,7 +250,7 @@ function LoadLocator(callback) {
     if(PhoneGap) {
 
     } else {
-        if(hasLocalStorage && currentTime < window.localStorage.getItem("locatorWritingTime") + locatorTimeOut) {
+        if(hasLocalStorage && currentTime < parseInt(window.localStorage.getItem("locatorWritingTime")) + locatorTimeOut) {
             var data = JSON.parse(window.localStorage.getItem("locator"));
             callback(data);
         } else {

@@ -335,21 +335,25 @@ $('#index_page').live('pageshow', function () {
                 $(item).find('p').html(data[ind].content);
                 $(item).find('img').attr('src', data[ind].image);
                 $(item).find('a').attr('rel', data[ind].id).attr('href', 'service_item.html?id=' + data[ind].id);
+                $(item).appendTo('#index_page #services_block').show();
                 html += '<div class="service">' + $(item).html() + '</div>';
             }
-            $('#index_page #services_block').append(html);
+            $("#index_page #services_block").append(html);
+
             LoadBanners(function (data) {
                 $('#index_page #news_block .news .news-item').not('.example').remove();
                 var bannersCount = 0;
-                var html = '';
                 for (var ind in data) {
                     var item = $('#index_page .news-item.example').clone();
-                    $(item).removeClass('example');
                     $(item).find('span').html(data[ind].header);
                     $(item).find('p').html(data[ind].content);
                     $(item).find('img').attr('src', data[ind].image);
-                    html += '<div class="news-item" style="display:' + (bannersCount++ == 0 ? 'block' : 'none')+ '">' + $(item).html() + '</div>';
+                    $(item).appendTo('#index_page #news_block .news');
+                    if (bannersCount++ == 0)
+                        $(item).show();
+
                     $('#news_position').append('<em>&bull;</em>');
+                    html += '<div style="display:' + (bannersCount++ == 0 ? 'block' : 'none') + '">' + $(item).html() + '</div>';
                 }
 
                 $('#index_page #news_block .news').append(html);
@@ -388,12 +392,13 @@ $('#news_page').live('pageshow', function () {
         InitHeaderEvents($('#news_page'));
 
         $.mobile.showPageLoadingMsg();
+        var html = '';
         LoadNews(function (data) {
-            var html = '';
+
             for (var ind in data) {
                 var item = $('#news_page .news-item.example').clone();
-                $(item).find('p').html(data[ind].content);
                 $(item).find('h2').html(data[ind].header);
+                $(item).find('p').html(data[ind].content);
                 $(item).find('img').attr('src', data[ind].image);
                 html += '<div class="news-item">' + $(item).html() + '</div>';
             }
@@ -530,7 +535,6 @@ $('#services_page').live('pageshow', function () {
 
         $.mobile.showPageLoadingMsg();
         LoadServices(function (data) {
-
             var html = '';
             for (var ind in data) {
                 var item = $('#services_page .service.example').clone();
@@ -538,12 +542,12 @@ $('#services_page').live('pageshow', function () {
                 $(item).find('span').html(data[ind].header);
                 $(item).find('img').attr('src', data[ind].image);
                 $(item).find('a').attr('rel', data[ind].id).attr('href', 'service_item.html?id=' + data[ind].id);
-                html += '<div class="service">' + $(item).html() + '</div>';
                 $(item).click(function () {
                     $(this).find('a').click();
                 });
+                html += '<div class="service">' + $(item).html() + '</div>';
             }
-            $('#services_page #services_block').append(html);
+            $('#services_page #services_block').html(html);
             $.mobile.hidePageLoadingMsg();
             $('#content').show();
         });

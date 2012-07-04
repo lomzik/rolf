@@ -6,10 +6,14 @@ var authUser = false;
 
 // Native or Mobile
 var PhoneGap = false;
-$.getScript('phonegap.js', function() {
-    //alert('Load was performed.');
-    PhoneGap = true;
-});
+//$.getScript('phonegap.js', function() {
+//alert('Load was performed.');
+//    PhoneGap = true;
+//});
+
+// DataBase
+var dbShell;
+var DB = false;
 
 // Check for support localStorage true/false
 var hasLocalStorage = (function () {
@@ -33,6 +37,13 @@ var servicesTimeOut = 3600*12*1000;
 var bannersTimeOut = 3600*1000;
 var locatorTimeOut = 3600*24*1000;
 
+//
+var newsWritingTime = 0;
+var servicesWritingTime = 0;
+var bannersWritingTime = 0;
+var locatorWritingTime = 0;
+
+
 // Current HTML Template
 var Page = location.pathname.substr(location.pathname.lastIndexOf('/') + 1);
 
@@ -45,13 +56,35 @@ if (authUser == 0) {
 //     document.location = "index_noauth.html";
 }
 
+// Wait for Cordova to load
+document.addEventListener("deviceready", onDeviceReady, false);
+
 $(document).bind("mobileinit", function () {
     $.mobile.touchOverflowEnabled = true;
 });
 
-document.addEventListener("deviceready", onDeviceReady, false);
+function isObjectDB(x) {
+    if (x == null) return false;
+    return {}.toString.call(x) == "[object Database]" ? true : false;
+}
+
 function onDeviceReady() {
-    $.mobile.touchOverflowEnabled = true;
+    PhoneGap = true;
+
+    //First, open our db
+    dbShell = window.openDatabase("rolfDB", "1.0", "Rolf demo DB", 200000);
+    DB = isObjectDB(dbShell);
+
+    if(DB) {
+        //run transaction to create initial tables
+        //dbShell.transaction(setupTable, dbErrorHandler, getEntries);
+        dbShell.transaction(setupTable, dbErrorHandler);
+    } else if(!DB && hasLocalStorage) {
+        newsWritingTime = parseInt(window.localStorage.getItem("newsWritingTime"));
+        servicesWritingTime = parseInt(window.localStorage.getItem("servicesWritingTime"));
+        bannersWritingTime = parseInt(window.localStorage.getItem("bannersWritingTime"));
+        locatorWritingTime = parseInt(window.localStorage.getItem("locatorWritingTime"));
+    }
 }
 
 
@@ -71,12 +104,35 @@ function parseUrlQuery(getHash) {
 }
 parseUrlQuery();
 
+/*
 function print_r(data) {
     var t = new Array();
     for (var prop in data) {
         t.push('data[' + prop + '] - ' + (data[prop] || 'n/a'));
     }
     alert(t.join('\n'));
+}
+*/
+
+function print_r(arr, level) {
+    var print_red_text = "";
+    if(!level) level = 0;
+    var level_padding = "";
+    for(var j=0; j<level+1; j++) level_padding += "    ";
+    if(typeof(arr) == 'object') {
+        for(var item in arr) {
+            var value = arr[item];
+            if(typeof(value) == 'object') {
+                print_red_text += level_padding + "'" + item + "' :\n";
+                print_red_text += print_r(value,level+1);
+            }
+            else
+                print_red_text += level_padding + "'" + item + "' => \"" + value + "\"\n";
+        }
+    }
+
+    else  print_red_text = "===>"+arr+"<===("+typeof(arr)+")";
+    return print_red_text;
 }
 
 function getCookie(name) {
@@ -86,7 +142,7 @@ function getCookie(name) {
     return matches ? decodeURIComponent(matches[1]) : undefined
 }
 
-// уcтанавливает cookie
+// СѓcС‚Р°РЅР°РІР»РёРІР°РµС‚ cookie
 function setCookie(name, value, props) {
     props = props || {}
     var exp = props.expires
@@ -111,13 +167,43 @@ function setCookie(name, value, props) {
     document.cookie = updatedCookie
 }
 
-// удаляет cookie
+// СѓРґР°Р»СЏРµС‚ cookie
 function deleteCookie(name) {
     setCookie(name, null, {
         expires:-1
     })
 }
 
+// create table if not exists
+function setupTable(tx) {
+    //tx.executeSql('DROP TABLE IF EXISTS WRITINGTIME');
+    //tx.executeSql('DROP TABLE IF EXISTS NEWS');
+    //tx.executeSql('DROP TABLE IF EXISTS SERVICES');
+    //tx.executeSql('DROP TABLE IF EXISTS BANNERS');
+    tx.executeSql('CREATE TABLE IF NOT EXISTS WRITINGTIME (name, created)');
+    tx.executeSql('insert into WRITINGTIME (name, created) values("newsWritingTime", 0)');
+    tx.executeSql('insert into WRITINGTIME (name, created) values("servicesWritingTime", 0)');
+    tx.executeSql('insert into WRITINGTIME (name, created) values("bannersWritingTime", 0)');
+    tx.executeSql('insert into WRITINGTIME (name, created) values("locatorWritingTime", 0)');
+
+    tx.executeSql("CREATE TABLE IF NOT EXISTS NEWS (id INTEGER, header, small_content, content, image, created INTEGER)");
+    tx.executeSql("CREATE TABLE IF NOT EXISTS BANNERS (id INTEGER, header, small_content, content, image, created INTEGER)");
+    tx.executeSql("CREATE TABLE IF NOT EXISTS SERVICES (id INTEGER, header, small_content, content, image, created INTEGER, on_main INTEGER)");
+
+    tx.executeSql("select * from WRITINGTIME", [], function(tx, data){
+        var len = data.rows.length;
+        if (len > 0 && len < 5) {
+            for (var i=0; i<len; i++){
+                eval(data.rows.item(i).name + ' = ' + data.rows.item(i).created);
+                window[data.rows.item(i).name] = data.rows.item(i).created;
+            //alert('wt = ' + data.rows.item(i).name);
+            }
+        }
+    }, dbErrorHandler);
+
+}
+
+// show error alert
 function dbErrorHandler(err) {
     alert("DB Error: " + err.message + "\nCode=" + err.code);
 }
@@ -126,11 +212,6 @@ function dbErrorHandler(err) {
 function setNetworkState() {
     var networkType = navigator.network.connection.type;
     networkEnabled = (networkType == 'none' || networkType == 'unknown') ? true : false;
-}
-
-function setupTable(tx) {
-    tx.executeSql("CREATE TABLE IF NOT EXISTS NEWS (id INTEGER PRIMARY KEY, header TEXT, content TEXT, preview TEXT)");
-    tx.executeSql("CREATE TABLE IF NOT EXISTS LOGIN (id INTEGER PRIMARY KEY, isAuth INT)");
 }
 
 //
@@ -182,9 +263,73 @@ function Logout() {
 
 function LoadBanners(callback) {
     if(PhoneGap) {
+        if (DB && date.getTime() < bannersWritingTime + bannersTimeOut) {
+            /**/
+            alert('load from db');
+            dbShell.transaction(
+                function(tx) {
+                    tx.executeSql("select * from BANNERS",
+                        [],
+                        function(tx, results){
+                            var data = {};
+                            for (var i=0; i<results.rows.length; i++){
+                                data[i] = results.rows.item(i);
+                            }
+                            callback(data);
+                        },
+                        dbErrorHandler);
+                },
+                dbErrorHandler);
+        /**/
+        } else if (hasLocalStorage && date.getTime() < bannersWritingTime + bannersTimeOut) {
+            var data = JSON.parse(window.localStorage.getItem("banners"));
+            callback(data);
+        } else {
+            alert('load from API');
+            $.ajax({
+                url:'http://phonegap.qulix.com/api/php/feeds.php?banners&callback=?',
+                dataType: 'json',
+                async: false,
+                success: function(data){
+                    if (DB) {
+                        // empty table
+                        // and write new data
+                        dbShell.transaction(
+                            function(tx) {
+                                tx.executeSql('delete from BANNERS where id > 0');
+                                //var sql = "";
+                                for (var ind in data) {
+                                    //sql += 'insert into BANNERS (id, header, small_content, content, image, created) values('+ data[ind].id+',"'+data[ind].header+'","'+data[ind].small_content+'","'+data[ind].content+'","'+data[ind].image+'",'+data[ind].created+','+data[ind].on_main+'); ';
+                                    //alert(sql);
+                                    tx.executeSql('insert into BANNERS (id, header, small_content, content, image, created) values(?, ?, ?, ?, ?, ?)', [data[ind].id, data[ind].header, data[ind].small_content, data[ind].content, data[ind].image, data[ind].created], function(){}, dbErrorHandler);
+                                }
+                                //tx.executeSql(sql, dbErrorHandler);
+                                tx.executeSql(
+                                    'update WRITINGTIME set created='+date.getTime()+' where name="bannersWritingTime"',
+                                    [],
+                                    function() {
+                                        bannersWritingTime = date.getTime();
+                                    },
+                                    dbErrorHandler
+                                    );
+                            },
+                            dbErrorHandler
+                            );
 
+                    }
+                    else if (hasLocalStorage) {
+                        window.localStorage.setItem("banners", JSON.stringify(data));
+                        window.localStorage.setItem("bannersWritingTime", date.getTime());
+                    }
+                    callback(data);
+                },
+                error: function(){
+                    callback({});
+                }
+            });
+        }
     } else {
-        if(hasLocalStorage && currentTime < parseInt(window.localStorage.getItem("bannersWritingTime")) + bannersTimeOut) {
+        if(hasLocalStorage && date.getTime() < bannersWritingTime + bannersTimeOut) {
             var data = JSON.parse(window.localStorage.getItem("banners"));
             callback(data);
         } else {
@@ -194,7 +339,7 @@ function LoadBanners(callback) {
                 async:false,
                 success: function(data){
                     window.localStorage.setItem("banners", JSON.stringify(data));
-                    window.localStorage.setItem("bannersWritingTime", currentTime);
+                    window.localStorage.setItem("bannersWritingTime", date.getTime());
                     callback(data);
                 }
             });
@@ -203,10 +348,75 @@ function LoadBanners(callback) {
 }
 
 function LoadServices(callback) {
-    if(PhoneGap) {
+    if (PhoneGap) {
+        if (DB && date.getTime() < servicesWritingTime + servicesTimeOut) {
+            /**/
+            alert('load from db');
+            dbShell.transaction(
+                function(tx) {
+                    tx.executeSql("select * from SERVICES",
+                        [],
+                        function(tx, results){
+                            var data = {};
+                            for (var i=0; i<results.rows.length; i++){
+                                data[i] = results.rows.item(i);
+                            }
+                            callback(data);
+                        },
+                        dbErrorHandler);
+                },
+                dbErrorHandler);
+        /**/
+        } else if (hasLocalStorage && date.getTime() < servicesWritingTime + servicesTimeOut) {
+            var data = JSON.parse(window.localStorage.getItem("services"));
+            callback(data);
+        } else {
+            alert('load from API');
+            $.ajax({
+                url:'http://phonegap.qulix.com/api/php/feeds.php?services&callback=?',
+                dataType: 'json',
+                async: false,
+                success: function(data){
+                    if (DB) {
+                        // empty table
+                        // and write new data
+                        dbShell.transaction(
+                            function(tx) {
+                                tx.executeSql('delete from SERVICES where id > 0');
+                                //var sql = "";
+                                for (var ind in data) {
+                                    //sql += 'insert into SERVICES (id, header, small_content, content, image, created) values('+ data[ind].id+',"'+data[ind].header+'","'+data[ind].small_content+'","'+data[ind].content+'","'+data[ind].image+'",'+data[ind].created+','+data[ind].on_main+'); ';
+                                    //alert(sql);
+                                    tx.executeSql('insert into SERVICES (id, header, small_content, content, image, created, on_main) values(?, ?, ?, ?, ?, ?, ?)', [data[ind].id, data[ind].header, data[ind].small_content, data[ind].content, data[ind].image, data[ind].created, data[ind].on_main], function(){}, dbErrorHandler);
+                                }
+                                //tx.executeSql(sql, dbErrorHandler);
+                                tx.executeSql(
+                                    'update WRITINGTIME set created='+date.getTime()+' where name="servicesWritingTime"',
+                                    [],
+                                    function() {
+                                        servicesWritingTime = date.getTime();
+                                    //alert('servicesWritingTime = ' + currentTime);
+                                    },
+                                    dbErrorHandler
+                                    );
+                            },
+                            dbErrorHandler
+                            );
 
+                    }
+                    else if (hasLocalStorage) {
+                        window.localStorage.setItem("services", JSON.stringify(data));
+                        window.localStorage.setItem("servicesWritingTime", date.getTime());
+                    }
+                    callback(data);
+                },
+                error: function(){
+                    callback({});
+                }
+            });
+        }
     } else {
-        if(hasLocalStorage && currentTime < parseInt(window.localStorage.getItem("servicesWritingTime")) + servicesTimeOut) {
+        if(hasLocalStorage && date.getTime() < servicesWritingTime + servicesTimeOut) {
             var data = JSON.parse(window.localStorage.getItem("services"));
             callback(data);
         } else {
@@ -216,7 +426,7 @@ function LoadServices(callback) {
                 async:false,
                 success: function(data){
                     window.localStorage.setItem("services", JSON.stringify(data));
-                    window.localStorage.setItem("servicesWritingTime", currentTime);
+                    window.localStorage.setItem("servicesWritingTime", date.getTime());
                     callback(data);
                 }
             });
@@ -226,9 +436,73 @@ function LoadServices(callback) {
 
 function LoadNews(callback) {
     if(PhoneGap) {
+        if (DB && date.getTime() < newsWritingTime + newsTimeOut) {
+            /**/
+            alert('load from db');
+            dbShell.transaction(
+                function(tx) {
+                    tx.executeSql("select * from NEWS",
+                        [],
+                        function(tx, results){
+                            var data = {};
+                            for (var i=0; i<results.rows.length; i++){
+                                data[i] = results.rows.item(i);
+                            }
+                            callback(data);
+                        },
+                        dbErrorHandler);
+                },
+                dbErrorHandler);
+        /**/
+        } else if (hasLocalStorage && date.getTime() < newsWritingTime + newsTimeOut) {
+            var data = JSON.parse(window.localStorage.getItem("news"));
+            callback(data);
+        } else {
+            alert('load from API');
+            $.ajax({
+                url:'http://phonegap.qulix.com/api/php/feeds.php?news&callback=?',
+                dataType: 'json',
+                async: false,
+                success: function(data){
+                    if (DB) {
+                        // empty table
+                        // and write new data
+                        dbShell.transaction(
+                            function(tx) {
+                                tx.executeSql('delete from NEWS where id > 0');
+                                //var sql = "";
+                                for (var ind in data) {
+                                    //sql += 'insert into NEWS (id, header, small_content, content, image, created) values('+ data[ind].id+',"'+data[ind].header+'","'+data[ind].small_content+'","'+data[ind].content+'","'+data[ind].image+'",'+data[ind].created+','+data[ind].on_main+'); ';
+                                    //alert(sql);
+                                    tx.executeSql('insert into NEWS (id, header, small_content, content, image, created) values(?, ?, ?, ?, ?, ?)', [data[ind].id, data[ind].header, data[ind].small_content, data[ind].content, data[ind].image, data[ind].created], function(){}, dbErrorHandler);
+                                }
+                                //tx.executeSql(sql, dbErrorHandler);
+                                tx.executeSql(
+                                    'update WRITINGTIME set created='+date.getTime()+' where name="newsWritingTime"',
+                                    [],
+                                    function() {
+                                        newsWritingTime = date.getTime();
+                                    },
+                                    dbErrorHandler
+                                    );
+                            },
+                            dbErrorHandler
+                            );
 
+                    }
+                    else if (hasLocalStorage) {
+                        window.localStorage.setItem("news", JSON.stringify(data));
+                        window.localStorage.setItem("newsWritingTime", date.getTime());
+                    }
+                    callback(data);
+                },
+                error: function(){
+                    callback({});
+                }
+            });
+        }
     } else {
-        if(hasLocalStorage && currentTime < parseInt(window.localStorage.getItem("newsWritingTime")) + newsTimeOut) {
+        if(hasLocalStorage && date.getTime() < newsWritingTime + newsTimeOut) {
             var data = JSON.parse(window.localStorage.getItem("news"));
             callback(data);
         } else {
@@ -238,7 +512,7 @@ function LoadNews(callback) {
                 async:false,
                 success: function(data){
                     window.localStorage.setItem("news", JSON.stringify(data));
-                    window.localStorage.setItem("newsWritingTime", currentTime);
+                    window.localStorage.setItem("newsWritingTime", date.getTime());
                     callback(data);
                 }
             });
@@ -250,7 +524,7 @@ function LoadLocator(callback) {
     if(PhoneGap) {
 
     } else {
-        if(hasLocalStorage && currentTime < parseInt(window.localStorage.getItem("locatorWritingTime")) + locatorTimeOut) {
+        if(hasLocalStorage && date.getTime() < locatorWritingTime + locatorTimeOut) {
             var data = JSON.parse(window.localStorage.getItem("locator"));
             callback(data);
         } else {
@@ -260,7 +534,7 @@ function LoadLocator(callback) {
                 async:false,
                 success: function(data){
                     window.localStorage.setItem("locator", JSON.stringify(data));
-                    window.localStorage.setItem("locatorWritingTime", currentTime);
+                    window.localStorage.setItem("locatorWritingTime", date.getTime());
                     callback(data);
                 }
             });
@@ -327,6 +601,7 @@ $('#index_page').live('pageshow', function () {
             $('#index_page #services_block .service').not('.example').remove();
 
             var html = '';
+            //alert(print_r(data));
             for (var ind in data) {
                 if (data[ind].on_main == 0) continue;
 
@@ -338,40 +613,41 @@ $('#index_page').live('pageshow', function () {
                 html += '<div class="service">' + $(item).html() + '</div>';
             }
             $("#index_page #services_block").append(html);
-
-            LoadBanners(function (data) {
-                $('#index_page #news_block .news .news-item').not('.example').remove();
-                var bannersCount = 0;
-                    html = '';
-                for (var ind in data) {
-                    var item = $('#index_page .news-item.example').clone();
-                    $(item).find('span').html(data[ind].header);
-                    $(item).find('p').html(data[ind].content);
-                    $(item).find('img').attr('src', data[ind].image);
-                    if (bannersCount++ == 0)
-                        $(item).show();
-
-                    $('#news_position').append('<em>&bull;</em>');
-                    html += '<div style="display:' + (bannersCount++ == 0 ? 'block' : 'none') + '">' + $(item).html() + '</div>';
-                }
-
-                $('#index_page #news_block .news').append(html);
-
-                $('#news_position').find('em').first().addClass('on');
-                $('.news-item.example').remove();
-
-                window.mySwipe = new Swipe(document.getElementById('banner_slider'), {
-                    callback:function (e, pos) {
-                        var i = $('#news_position em').removeClass('on');
-                        $($('#news_position em').get(pos)).addClass('on');
-
-                    }
-                });
-                $.mobile.hidePageLoadingMsg();
-                $('#index_page #content').show();
-            }
-            );
         });
+
+/**/
+        LoadBanners(function (data) {
+            $('#index_page #news_block .news .news-item').not('.example').remove();
+            var bannersCount = 0;
+            html = '';
+            for (var ind in data) {
+                var item = $('#index_page .news-item.example').clone();
+                $(item).find('span').html(data[ind].header);
+                $(item).find('p').html(data[ind].content);
+                $(item).find('img').attr('src', data[ind].image);
+                if (bannersCount++ == 0)
+                    $(item).show();
+
+                $('#news_position').append('<em>&bull;</em>');
+                html += '<div style="display:' + (bannersCount++ == 0 ? 'block' : 'none') + '">' + $(item).html() + '</div>';
+            }
+
+            $('#index_page #news_block .news').append(html);
+
+            $('#news_position').find('em').first().addClass('on');
+            $('.news-item.example').remove();
+
+            window.mySwipe = new Swipe(document.getElementById('banner_slider'), {
+                callback:function (e, pos) {
+                    var i = $('#news_position em').removeClass('on');
+                    $($('#news_position em').get(pos)).addClass('on');
+
+                }
+            });
+        });
+/**/
+        $.mobile.hidePageLoadingMsg();
+        $('#index_page #content').show();
     });
 
 });
@@ -516,7 +792,7 @@ $(document).bind("pagebeforechange", function (e, data) {
  });
  }
 
- */
+*/
 
 $('#services_page').live('pagebeforeshow', function () {
     $(this).find('#content').hide();
@@ -590,5 +866,5 @@ $('#serviceitem_page').live('pageshow', function () {
 });
 
 $(document).ready(function () {
-    onDeviceReady();
-});
+    //
+    });

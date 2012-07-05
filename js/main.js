@@ -24,7 +24,7 @@ var hasLocalStorage = (function () {
     } catch (e) {
         return false;
     }
-} ());
+}());
 
 // Curent Date
 var date = new Date();
@@ -32,10 +32,10 @@ var date = new Date();
 var currentTime = date.getTime();
 
 // Content time-out's, for read from localStorage or from Internet with API
-var newsTimeOut = 3600*1000;
-var servicesTimeOut = 3600*12*1000;
-var bannersTimeOut = 3600*1000;
-var locatorTimeOut = 3600*24*1000;
+var newsTimeOut = 3600 * 1000;
+var servicesTimeOut = 3600 * 12 * 1000;
+var bannersTimeOut = 3600 * 1000;
+var locatorTimeOut = 3600 * 24 * 1000;
 
 //
 var newsWritingTime = 0;
@@ -75,11 +75,11 @@ function onDeviceReady() {
     dbShell = window.openDatabase("rolfDB", "1.0", "Rolf demo DB", 200000);
     DB = isObjectDB(dbShell);
 
-    if(DB) {
+    if (DB) {
         //run transaction to create initial tables
         //dbShell.transaction(setupTable, dbErrorHandler, getEntries);
         dbShell.transaction(setupTable, dbErrorHandler);
-    } else if(!DB && hasLocalStorage) {
+    } else if (!DB && hasLocalStorage) {
         newsWritingTime = parseInt(window.localStorage.getItem("newsWritingTime"));
         servicesWritingTime = parseInt(window.localStorage.getItem("servicesWritingTime"));
         bannersWritingTime = parseInt(window.localStorage.getItem("bannersWritingTime"));
@@ -105,40 +105,40 @@ function parseUrlQuery(getHash) {
 parseUrlQuery();
 
 /*
-function print_r(data) {
-    var t = new Array();
-    for (var prop in data) {
-        t.push('data[' + prop + '] - ' + (data[prop] || 'n/a'));
-    }
-    alert(t.join('\n'));
-}
-*/
+ function print_r(data) {
+ var t = new Array();
+ for (var prop in data) {
+ t.push('data[' + prop + '] - ' + (data[prop] || 'n/a'));
+ }
+ alert(t.join('\n'));
+ }
+ */
 
 function print_r(arr, level) {
     var print_red_text = "";
-    if(!level) level = 0;
+    if (!level) level = 0;
     var level_padding = "";
-    for(var j=0; j<level+1; j++) level_padding += "    ";
-    if(typeof(arr) == 'object') {
-        for(var item in arr) {
+    for (var j = 0; j < level + 1; j++) level_padding += "    ";
+    if (typeof(arr) == 'object') {
+        for (var item in arr) {
             var value = arr[item];
-            if(typeof(value) == 'object') {
+            if (typeof(value) == 'object') {
                 print_red_text += level_padding + "'" + item + "' :\n";
-                print_red_text += print_r(value,level+1);
+                print_red_text += print_r(value, level + 1);
             }
             else
                 print_red_text += level_padding + "'" + item + "' => \"" + value + "\"\n";
         }
     }
 
-    else  print_red_text = "===>"+arr+"<===("+typeof(arr)+")";
+    else  print_red_text = "===>" + arr + "<===(" + typeof(arr) + ")";
     return print_red_text;
 }
 
 function getCookie(name) {
     var matches = document.cookie.match(new RegExp(
         "(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"
-        ));
+    ));
     return matches ? decodeURIComponent(matches[1]) : undefined
 }
 
@@ -190,13 +190,13 @@ function setupTable(tx) {
     tx.executeSql("CREATE TABLE IF NOT EXISTS BANNERS (id INTEGER, header, small_content, content, image, created INTEGER)");
     tx.executeSql("CREATE TABLE IF NOT EXISTS SERVICES (id INTEGER, header, small_content, content, image, created INTEGER, on_main INTEGER)");
 
-    tx.executeSql("select * from WRITINGTIME", [], function(tx, data){
+    tx.executeSql("select * from WRITINGTIME", [], function (tx, data) {
         var len = data.rows.length;
         if (len > 0 && len < 5) {
-            for (var i=0; i<len; i++){
+            for (var i = 0; i < len; i++) {
                 eval(data.rows.item(i).name + ' = ' + data.rows.item(i).created);
                 window[data.rows.item(i).name] = data.rows.item(i).created;
-            //alert('wt = ' + data.rows.item(i).name);
+                //alert('wt = ' + data.rows.item(i).name);
             }
         }
     }, dbErrorHandler);
@@ -262,17 +262,17 @@ function Logout() {
 }
 
 function LoadBanners(callback) {
-    if(PhoneGap) {
+    if (PhoneGap) {
         if (DB && date.getTime() < bannersWritingTime + bannersTimeOut) {
             /**/
             alert('load from db');
             dbShell.transaction(
-                function(tx) {
+                function (tx) {
                     tx.executeSql("select * from BANNERS",
                         [],
-                        function(tx, results){
+                        function (tx, results) {
                             var data = {};
-                            for (var i=0; i<results.rows.length; i++){
+                            for (var i = 0; i < results.rows.length; i++) {
                                 data[i] = results.rows.item(i);
                             }
                             callback(data);
@@ -280,7 +280,7 @@ function LoadBanners(callback) {
                         dbErrorHandler);
                 },
                 dbErrorHandler);
-        /**/
+            /**/
         } else if (hasLocalStorage && date.getTime() < bannersWritingTime + bannersTimeOut) {
             var data = JSON.parse(window.localStorage.getItem("banners"));
             callback(data);
@@ -288,33 +288,34 @@ function LoadBanners(callback) {
             alert('load from API');
             $.ajax({
                 url:'http://phonegap.qulix.com/api/php/feeds.php?banners&callback=?',
-                dataType: 'json',
-                async: false,
-                success: function(data){
+                dataType:'json',
+                async:false,
+                success:function (data) {
                     if (DB) {
                         // empty table
                         // and write new data
                         dbShell.transaction(
-                            function(tx) {
+                            function (tx) {
                                 tx.executeSql('delete from BANNERS where id > 0');
                                 //var sql = "";
                                 for (var ind in data) {
                                     //sql += 'insert into BANNERS (id, header, small_content, content, image, created) values('+ data[ind].id+',"'+data[ind].header+'","'+data[ind].small_content+'","'+data[ind].content+'","'+data[ind].image+'",'+data[ind].created+','+data[ind].on_main+'); ';
                                     //alert(sql);
-                                    tx.executeSql('insert into BANNERS (id, header, small_content, content, image, created) values(?, ?, ?, ?, ?, ?)', [data[ind].id, data[ind].header, data[ind].small_content, data[ind].content, data[ind].image, data[ind].created], function(){}, dbErrorHandler);
+                                    tx.executeSql('insert into BANNERS (id, header, small_content, content, image, created) values(?, ?, ?, ?, ?, ?)', [data[ind].id, data[ind].header, data[ind].small_content, data[ind].content, data[ind].image, data[ind].created], function () {
+                                    }, dbErrorHandler);
                                 }
                                 //tx.executeSql(sql, dbErrorHandler);
                                 tx.executeSql(
-                                    'update WRITINGTIME set created='+date.getTime()+' where name="bannersWritingTime"',
+                                    'update WRITINGTIME set created=' + date.getTime() + ' where name="bannersWritingTime"',
                                     [],
-                                    function() {
+                                    function () {
                                         bannersWritingTime = date.getTime();
                                     },
                                     dbErrorHandler
-                                    );
+                                );
                             },
                             dbErrorHandler
-                            );
+                        );
 
                     }
                     else if (hasLocalStorage) {
@@ -323,13 +324,13 @@ function LoadBanners(callback) {
                     }
                     callback(data);
                 },
-                error: function(){
+                error:function () {
                     callback({});
                 }
             });
         }
     } else {
-        if(hasLocalStorage && date.getTime() < bannersWritingTime + bannersTimeOut) {
+        if (hasLocalStorage && date.getTime() < bannersWritingTime + bannersTimeOut) {
             var data = JSON.parse(window.localStorage.getItem("banners"));
             callback(data);
         } else {
@@ -337,7 +338,7 @@ function LoadBanners(callback) {
                 url:'http://phonegap.qulix.com/api/php/feeds.php?banners&callback=?',
                 dataType:'json',
                 async:false,
-                success: function(data){
+                success:function (data) {
                     window.localStorage.setItem("banners", JSON.stringify(data));
                     window.localStorage.setItem("bannersWritingTime", date.getTime());
                     callback(data);
@@ -353,12 +354,12 @@ function LoadServices(callback) {
             /**/
             alert('load from db');
             dbShell.transaction(
-                function(tx) {
+                function (tx) {
                     tx.executeSql("select * from SERVICES",
                         [],
-                        function(tx, results){
+                        function (tx, results) {
                             var data = {};
-                            for (var i=0; i<results.rows.length; i++){
+                            for (var i = 0; i < results.rows.length; i++) {
                                 data[i] = results.rows.item(i);
                             }
                             callback(data);
@@ -366,7 +367,7 @@ function LoadServices(callback) {
                         dbErrorHandler);
                 },
                 dbErrorHandler);
-        /**/
+            /**/
         } else if (hasLocalStorage && date.getTime() < servicesWritingTime + servicesTimeOut) {
             var data = JSON.parse(window.localStorage.getItem("services"));
             callback(data);
@@ -374,34 +375,35 @@ function LoadServices(callback) {
             alert('load from API');
             $.ajax({
                 url:'http://phonegap.qulix.com/api/php/feeds.php?services&callback=?',
-                dataType: 'json',
-                async: false,
-                success: function(data){
+                dataType:'json',
+                async:false,
+                success:function (data) {
                     if (DB) {
                         // empty table
                         // and write new data
                         dbShell.transaction(
-                            function(tx) {
+                            function (tx) {
                                 tx.executeSql('delete from SERVICES where id > 0');
                                 //var sql = "";
                                 for (var ind in data) {
                                     //sql += 'insert into SERVICES (id, header, small_content, content, image, created) values('+ data[ind].id+',"'+data[ind].header+'","'+data[ind].small_content+'","'+data[ind].content+'","'+data[ind].image+'",'+data[ind].created+','+data[ind].on_main+'); ';
                                     //alert(sql);
-                                    tx.executeSql('insert into SERVICES (id, header, small_content, content, image, created, on_main) values(?, ?, ?, ?, ?, ?, ?)', [data[ind].id, data[ind].header, data[ind].small_content, data[ind].content, data[ind].image, data[ind].created, data[ind].on_main], function(){}, dbErrorHandler);
+                                    tx.executeSql('insert into SERVICES (id, header, small_content, content, image, created, on_main) values(?, ?, ?, ?, ?, ?, ?)', [data[ind].id, data[ind].header, data[ind].small_content, data[ind].content, data[ind].image, data[ind].created, data[ind].on_main], function () {
+                                    }, dbErrorHandler);
                                 }
                                 //tx.executeSql(sql, dbErrorHandler);
                                 tx.executeSql(
-                                    'update WRITINGTIME set created='+date.getTime()+' where name="servicesWritingTime"',
+                                    'update WRITINGTIME set created=' + date.getTime() + ' where name="servicesWritingTime"',
                                     [],
-                                    function() {
+                                    function () {
                                         servicesWritingTime = date.getTime();
-                                    //alert('servicesWritingTime = ' + currentTime);
+                                        //alert('servicesWritingTime = ' + currentTime);
                                     },
                                     dbErrorHandler
-                                    );
+                                );
                             },
                             dbErrorHandler
-                            );
+                        );
 
                     }
                     else if (hasLocalStorage) {
@@ -410,13 +412,13 @@ function LoadServices(callback) {
                     }
                     callback(data);
                 },
-                error: function(){
+                error:function () {
                     callback({});
                 }
             });
         }
     } else {
-        if(hasLocalStorage && date.getTime() < servicesWritingTime + servicesTimeOut) {
+        if (hasLocalStorage && date.getTime() < servicesWritingTime + servicesTimeOut) {
             var data = JSON.parse(window.localStorage.getItem("services"));
             callback(data);
         } else {
@@ -424,7 +426,7 @@ function LoadServices(callback) {
                 url:'http://phonegap.qulix.com/api/php/feeds.php?services&callback=?',
                 dataType:'json',
                 async:false,
-                success: function(data){
+                success:function (data) {
                     window.localStorage.setItem("services", JSON.stringify(data));
                     window.localStorage.setItem("servicesWritingTime", date.getTime());
                     callback(data);
@@ -435,17 +437,17 @@ function LoadServices(callback) {
 }
 
 function LoadNews(callback) {
-    if(PhoneGap) {
+    if (PhoneGap) {
         if (DB && date.getTime() < newsWritingTime + newsTimeOut) {
             /**/
             alert('load from db');
             dbShell.transaction(
-                function(tx) {
+                function (tx) {
                     tx.executeSql("select * from NEWS",
                         [],
-                        function(tx, results){
+                        function (tx, results) {
                             var data = {};
-                            for (var i=0; i<results.rows.length; i++){
+                            for (var i = 0; i < results.rows.length; i++) {
                                 data[i] = results.rows.item(i);
                             }
                             callback(data);
@@ -453,7 +455,7 @@ function LoadNews(callback) {
                         dbErrorHandler);
                 },
                 dbErrorHandler);
-        /**/
+            /**/
         } else if (hasLocalStorage && date.getTime() < newsWritingTime + newsTimeOut) {
             var data = JSON.parse(window.localStorage.getItem("news"));
             callback(data);
@@ -461,33 +463,34 @@ function LoadNews(callback) {
             alert('load from API');
             $.ajax({
                 url:'http://phonegap.qulix.com/api/php/feeds.php?news&callback=?',
-                dataType: 'json',
-                async: false,
-                success: function(data){
+                dataType:'json',
+                async:false,
+                success:function (data) {
                     if (DB) {
                         // empty table
                         // and write new data
                         dbShell.transaction(
-                            function(tx) {
+                            function (tx) {
                                 tx.executeSql('delete from NEWS where id > 0');
                                 //var sql = "";
                                 for (var ind in data) {
                                     //sql += 'insert into NEWS (id, header, small_content, content, image, created) values('+ data[ind].id+',"'+data[ind].header+'","'+data[ind].small_content+'","'+data[ind].content+'","'+data[ind].image+'",'+data[ind].created+','+data[ind].on_main+'); ';
                                     //alert(sql);
-                                    tx.executeSql('insert into NEWS (id, header, small_content, content, image, created) values(?, ?, ?, ?, ?, ?)', [data[ind].id, data[ind].header, data[ind].small_content, data[ind].content, data[ind].image, data[ind].created], function(){}, dbErrorHandler);
+                                    tx.executeSql('insert into NEWS (id, header, small_content, content, image, created) values(?, ?, ?, ?, ?, ?)', [data[ind].id, data[ind].header, data[ind].small_content, data[ind].content, data[ind].image, data[ind].created], function () {
+                                    }, dbErrorHandler);
                                 }
                                 //tx.executeSql(sql, dbErrorHandler);
                                 tx.executeSql(
-                                    'update WRITINGTIME set created='+date.getTime()+' where name="newsWritingTime"',
+                                    'update WRITINGTIME set created=' + date.getTime() + ' where name="newsWritingTime"',
                                     [],
-                                    function() {
+                                    function () {
                                         newsWritingTime = date.getTime();
                                     },
                                     dbErrorHandler
-                                    );
+                                );
                             },
                             dbErrorHandler
-                            );
+                        );
 
                     }
                     else if (hasLocalStorage) {
@@ -496,13 +499,13 @@ function LoadNews(callback) {
                     }
                     callback(data);
                 },
-                error: function(){
+                error:function () {
                     callback({});
                 }
             });
         }
     } else {
-        if(hasLocalStorage && date.getTime() < newsWritingTime + newsTimeOut) {
+        if (hasLocalStorage && date.getTime() < newsWritingTime + newsTimeOut) {
             var data = JSON.parse(window.localStorage.getItem("news"));
             callback(data);
         } else {
@@ -510,7 +513,7 @@ function LoadNews(callback) {
                 url:'http://phonegap.qulix.com/api/php/feeds.php?news&callback=?',
                 dataType:'json',
                 async:false,
-                success: function(data){
+                success:function (data) {
                     window.localStorage.setItem("news", JSON.stringify(data));
                     window.localStorage.setItem("newsWritingTime", date.getTime());
                     callback(data);
@@ -521,10 +524,10 @@ function LoadNews(callback) {
 }
 
 function LoadLocator(callback) {
-    if(PhoneGap) {
+    if (PhoneGap) {
 
     } else {
-        if(hasLocalStorage && date.getTime() < locatorWritingTime + locatorTimeOut) {
+        if (hasLocalStorage && date.getTime() < locatorWritingTime + locatorTimeOut) {
             var data = JSON.parse(window.localStorage.getItem("locator"));
             callback(data);
         } else {
@@ -532,7 +535,7 @@ function LoadLocator(callback) {
                 url:'http://phonegap.qulix.com/api/php/feeds.php?locator&callback=?',
                 dataType:'json',
                 async:false,
-                success: function(data){
+                success:function (data) {
                     window.localStorage.setItem("locator", JSON.stringify(data));
                     window.localStorage.setItem("locatorWritingTime", date.getTime());
                     callback(data);
@@ -554,17 +557,17 @@ function InitHeaderEvents(page) {
         var password = $(page).find('#password').val();
 
         $.getJSON("http://phonegap.qulix.com/login.php?callback=?",
-        {
-            user_login:login,
-            user_password:password
-        },
-        function (data) {
-            if (data.error.length != 0)
-                AuthFail(data.error);
-            else {
-                AuthSuccess(data.userId, data.name);
-            }
-        });
+            {
+                user_login:login,
+                user_password:password
+            },
+            function (data) {
+                if (data.error.length != 0)
+                    AuthFail(data.error);
+                else {
+                    AuthSuccess(data.userId, data.name);
+                }
+            });
 
         return false;
     });
@@ -601,7 +604,6 @@ $('#index_page').live('pageshow', function () {
             $('#index_page #services_block .service').not('.example').remove();
 
             var html = '';
-            //alert(print_r(data));
             for (var ind in data) {
                 if (data[ind].on_main == 0) continue;
 
@@ -615,7 +617,6 @@ $('#index_page').live('pageshow', function () {
             $("#index_page #services_block").append(html);
         });
 
-/**/
         LoadBanners(function (data) {
             $('#index_page #news_block .news .news-item').not('.example').remove();
             var bannersCount = 0;
@@ -629,7 +630,7 @@ $('#index_page').live('pageshow', function () {
                     $(item).show();
 
                 $('#news_position').append('<em>&bull;</em>');
-                html += '<div style="display:' + (bannersCount++ == 0 ? 'block' : 'none') + '">' + $(item).html() + '</div>';
+                html += '<li class="royalSlide" style="display:' + (bannersCount++ == 0 ? 'block' : 'block') + '">' + $(item).html() + '</li>';
             }
 
             $('#index_page #news_block .news').append(html);
@@ -637,17 +638,22 @@ $('#index_page').live('pageshow', function () {
             $('#news_position').find('em').first().addClass('on');
             $('.news-item.example').remove();
 
-            window.mySwipe = new Swipe(document.getElementById('banner_slider'), {
-                callback:function (e, pos) {
-                    var i = $('#news_position em').removeClass('on');
-                    $($('#news_position em').get(pos)).addClass('on');
+            $('#index_page #content').show();
+            $('#banner_slider').royalSlider({
+                directionNavEnabled:false,
+                directionNavAutoHide:false,
+                welcomeScreenEnabled:false,
+                imageAlignCenter:true,
+                hideArrowOnLastSlide:false,
+                keyboardNavEnabled:true
+            }).data('royalSlider');
 
-                }
-            });
+
+            $.mobile.hidePageLoadingMsg();
+
+
         });
-/**/
-        $.mobile.hidePageLoadingMsg();
-        $('#index_page #content').show();
+
     });
 
 });
@@ -726,10 +732,10 @@ $('#locator_page').live('pageshow', function () {
                                     'position':new google.maps.LatLng(marker.latitude, marker.longitude),
                                     'bounds':true
                                 }).click(function () {
-                                    $('#map').gmap('openInfoWindow', {
-                                        'content':marker.content
-                                    }, this);
-                                });
+                                        $('#map').gmap('openInfoWindow', {
+                                            'content':marker.content
+                                        }, this);
+                                    });
                             });
 
                         }
@@ -749,7 +755,7 @@ $('#locator_page').live('pageshow', function () {
 $(document).bind("pagebeforechange", function (e, data) {
     if (typeof data.toPage === "string") {
         var u = $.mobile.path.parseUrl(data.toPage);
-    /*  if ( u.pathname.search("service_item.html") !== -1 ) {
+        /*  if ( u.pathname.search("service_item.html") !== -1 ) {
          var id = u.search.substr(4);
          ShowService( id, data.options );
          e.preventDefault();
@@ -792,7 +798,7 @@ $(document).bind("pagebeforechange", function (e, data) {
  });
  }
 
-*/
+ */
 
 $('#services_page').live('pagebeforeshow', function () {
     $(this).find('#content').hide();
@@ -866,5 +872,5 @@ $('#serviceitem_page').live('pageshow', function () {
 });
 
 $(document).ready(function () {
-    //
-    });
+    //onDeviceReady();
+});

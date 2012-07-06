@@ -599,14 +599,18 @@ $('#index_page').live('pageshow', function () {
             for (var ind in data) {
                 if (data[ind].on_main == 0) continue;
 
-                var item = $('#index_page #services_block .service.example:first').clone();
-                $(item).find('span').html(data[ind].header);
+                var item = $('.service.example:first').clone();
+                $(item).find('h3').html(data[ind].header);
                 $(item).find('p').html(data[ind].content);
                 $(item).find('img').attr('src', data[ind].image);
                 $(item).find('a').attr('rel', data[ind].id).attr('href', 'service_item.html?id=' + data[ind].id);
-                html += '<div class="service">' + $(item).html() + '</div>';
+                //html += '<li class="service">' + $(item).html() + '</li>';
+                $("#index_page #services_block").append(item);
             }
-            $("#index_page #services_block").append(html);
+            $('.service.example:first').remove();
+            $('.service.example').removeClass('example');
+            //$("#index_page #services_block").append(html).listview('refresh');
+            $("#index_page #services_block").listview('refresh');
         });
 
         LoadBanners(function (data) {
@@ -631,6 +635,7 @@ $('#index_page').live('pageshow', function () {
             $('.news-item.example').remove();
 
             $('#index_page #content').show();
+
             $('#banner_slider').royalSlider({
                 directionNavEnabled:false,
                 directionNavAutoHide:false,

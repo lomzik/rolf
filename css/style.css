@@ -1,6 +1,8 @@
 /* basic styles */
 html, body {
     height: auto;
+    padding:0;
+    margin:0;
 }
 
 a {
@@ -16,6 +18,8 @@ a:hover {
 img {
     border: 0;
     border: none;
+    max-width: 100%;
+    height: auto;
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -43,22 +47,12 @@ sup, sub {
 }
 
 body {
-    font-family: Arial;
+    font-family: Arial, sans-serif;
     font-size: 1em;
 }
 
 .clear {
     clear: both;
-}
-
-/*
-*   Core rewriting
-*/
-
-.ui-page-header-fixed{padding-top:0;}
-.ui-page-footer-fixed{padding-bottom:0;}
-.ui-body-c, .ui-body-c input, .ui-body-c select, .ui-body-c textarea, .ui-body-c button{
-    font-family: Arial;
 }
 
 /*
@@ -69,24 +63,23 @@ body {
     background: #dcdcdc;
 }
 
-#content{padding: 0; margin-top: 47px;}
+#content{
+    padding: 0;
+    margin: 0;
+}
 
 #header {
     height: 47px;
-    background: #c4141b;
-    background-image: -webkit-gradient(linear, left top, left bottom, from(#3c3c3c), to(#111));
-    background-image: -webkit-linear-gradient(#d61d25, #c4141b);
-    background-image: -moz-linear-gradient(#d61d25, #c4141b);
-    background-image: -ms-linear-gradient(#d61d25, #c4141b);
-    background-image: -o-linear-gradient(#d61d25, #c4141b);
-    background-image: linear-gradient(#d61d25, #c4141b);
+    width: 100%;
+    background: url('/img/bg_header.png') top left repeat-x ;
 }
 
 #header .header-button {
     display: block;
-    height: 34px;
-    width: 40px;
-    margin: 5px 5px;
+    height: 47px;
+    width: 42px;
+    margin: 0 5px 0 0;
+    background: url('/img/bg_pr.png') center no-repeat;
 }
 
 #header .header-button.active{
@@ -110,9 +103,8 @@ body {
 
 #header .header-button a {
     display: block;
-    height: 29px;
-    width: 29px;
-    margin: 5px 0 0 6px;
+    height: 47px;
+    width: 42px;
 }
 
 #header .danger a {
@@ -120,7 +112,7 @@ body {
 }
 
 #header .profile a {
-    background: url('../img/bg_profile.png') no-repeat;
+    background: url('../img/profile-icon.png') center no-repeat;
 }
 
 #header .info a{
@@ -128,41 +120,27 @@ body {
 }
 
 #header h1 {
-    margin: 0 30px;
-    font-size: 28px;
+    margin: 0 50px;
+    font-size: 24px;
     line-height: 47px;
+    font-weight: bold;
+    text-shadow: 1px -1px #9a4448;
+    font-family: 'Arial Black', Arial, sans-serif;
 }
 
 #footer {
-    background-image: -webkit-gradient(linear, left top, left bottom, from(#ece9e9), to(#c9c9c9));
-    background-image: -webkit-linear-gradient(#ece9e9, #c9c9c9);
-    background-image: -moz-linear-gradient(#ece9e9, #c9c9c9);
-    background-image: -ms-linear-gradient(#ece9e9, #c9c9c9);
-    background-image: -o-linear-gradient(#ece9e9, #c9c9c9);
-    background-image: linear-gradient(#ece9e9, #c9c9c9);
-}
-
-#footer .footer-button {
-}
-
-#footer .footer-button span{
-
+    background: url('../img/bg_footer.png') left center repeat-x;
+    height: 51px;
 }
 
 #footer .footer-button:hover{
     text-decoration: none;
 }
 
-#footer  .ui-icon{border-radius: 0; width:42px; height:31px;  }
-#footer #mainFooterIcon .ui-icon { background:  url(../img/icons/icon_general.png) 50% 50% no-repeat;}
-#footer #newsFooterIcon .ui-icon { background:  url(../img/icons/icon_news.png) 50% 50% no-repeat;;  }
-#footer #servicesFooterIcon .ui-icon { background:  url(../img/icons/icon_srvises.png) 50% 50% no-repeat;; }
-#footer #locatorFooterIcon .ui-icon { background:  url(../img/icons/icon_locator.png) 50% 50% no-repeat;; }
-
 #news_block_wr{
-    background: url('../img/news_bg.png') repeat;
-    padding: 18px 12px;
-    margin-bottom: 200px;
+    background: url('../img/bg_news_dots.png') repeat;
+    padding: 0.5em;
+    margin-bottom: 51px;
 }
 
 #news_block{
@@ -177,8 +155,10 @@ body {
     color: #fff;
     font-size: 13px;
     font-weight: bold;
+    height: 19px;
     line-height: 19px;
-    border-radius: 4px 4px 0 0;
+    border-radius: 5px 5px 0 0;
+    -webkit-border-radius: 5px 5px 0 0;
 }
 
 #news_block .news-item {
@@ -197,11 +177,12 @@ body {
 #news_block .news-image {
     float: left;
     width: 100px;
-    padding: 0 5px;
+    padding: 0.5em;
 }
 
 #news_block .news-content {
-    margin-left: 110px;
+    margin-left: 100px;
+    padding: 0.5em;
 }
 
 #news_block .news-content p {
@@ -221,11 +202,28 @@ body {
 }
 
 #services_block {
-    margin: 6px 4px;
+    display: block;
+    -webkit-box-shadow: 0 1px 1px 1px #7b7b7b;
+    box-shadow: 0 1px 1px 1px #7b7b7b;
+    border-radius: 7px;
+    -webkit-border-radius: 7px;
+    padding: 0.5em 0;
+    background: #FFFFFF;
 }
 
-#services_wr{
-    text-shadow: none;
+.service-wrapper{
+    padding: 0.5em;
+    background: url('/img/bg_service_block.png') left center repeat;
+}
+
+#services_block .service {
+    background: #ffffff;
+    padding: 0.5em;
+    border-bottom: 1px solid #d1d1d1;
+}
+
+#services_block .service:last-child{
+    border-bottom: none;
 }
 
 #services_block .service:hover{
@@ -240,13 +238,7 @@ body {
     text-decoration: none;
 }
 
-.service {
-    background: #fff;
-    padding: 5px 0 10px 0;
-    border-left: 1px solid #d1d1d1;
-    border-right: 1px solid #d1d1d1;
-    border-bottom: 1px solid #d1d1d1;
-}
+
 
 #services_block .service.first {
     border-radius: 4px 4px 0 0;
@@ -258,19 +250,22 @@ body {
 }
 
 .service .service-image {
-    width: 100px;
+    width: 48px;
     float: left;
-    text-align: center;
-    margin-right: 5px;
 }
-
+.service .service-image img{
+    width: 48px;
+    height: 48px;
+}
 .service .service-content-block {
     padding-bottom: 10px;
     margin: 0 10px 0 55px;
     color: #969696;
 }
-
-.service span {
+.service .service-content{
+    margin-left: 55px;
+}
+.service .service-content span {
     color: #272727;
     font-weight: bold;
     margin-bottom: 7px;
@@ -278,7 +273,7 @@ body {
 
 .service p {
     color: #969696;
-    font-size: 12px;
+    font-size: 90%;
     margin-top: 5px;
 }
 
@@ -327,7 +322,7 @@ body {
     margin-left: 60px;
 }
 
-#services_additional .service span {
+#services_additional .service .service-content span {
     color: #fff;
     font-weight: bold;
     margin-bottom: 7px;
@@ -360,18 +355,6 @@ body {
     color: #fff;
 }
 
-#auth_block .ui-btn
-{
-    margin: 10px auto;
-    display: block;
-    width: 120px;
-}
-
-body{
-    padding:0px;
-    margin:0px;
-}
-
 .appGallery{
     overflow:hidden;
 }
@@ -387,7 +370,6 @@ body{
     display:block;
     float:left;
 }
-
 
 .imageHandler{
     position:absolute;
@@ -442,8 +424,6 @@ body{
     padding: 20px 30px;
 }
 
-.ui-page{min-height: inherit !important;}
-
 .noauth-warning{
     padding: 15px;
     font-size: 28px;
@@ -457,5 +437,341 @@ body{
 #banner_slider li{
     display: block;
     float: left;
-    background: #fff;
+    background: #ffffff;
+    border-radius: 5px 5px 0 0;
+    -webkit-border-radius: 5px 5px 0 0;
+}
+
+
+/*
+
+RoyalSlider
+
+*/
+.royalSlider {
+    position:relative;
+    /* set width and height of slider here, in px, % or em*/
+    width:600px;
+    height:300px;
+    /* Used to prevent content "jumping" on page load. this property is removed when javascript is loaded and slider is instanciated */
+    overflow:hidden;
+}
+
+
+
+/**
+*  Slides area (set background here)
+*/
+
+.royalSlider .royalWrapper {
+    overflow:hidden;
+    position:relative;
+
+    width:100%;
+    height:100%;
+}
+.royalSlider .royalSlide,
+.royalSlider .royalWrapper {
+    /* Bakground behind slides */
+    background: none;
+}
+/* slides holder, grabbing container */
+.royalSlider .royalSlidesContainer {
+    position: relative;
+    left: 0;
+    top: 0 !important;
+    list-style:none !important;
+    margin:0 !important;
+    padding:0 !important;
+    border: 0 !important;
+}
+
+
+/* slide item */
+.royalSlider .royalSlide {
+    padding: 0 !important;
+    margin: 0 !important;
+    border: 0 !important;
+    list-style: none !important;
+
+    position:relative;
+    float:left;
+
+    overflow:hidden;
+}
+
+/*
+
+        Direction Navigation (arrows)
+
+*/
+.royalSlider .arrow
+{
+    /*background:url(../img/controlsSprite.png) no-repeat 0 0;*/
+    background-color: #C00;
+    background-repeat: no-repeat;
+    background-position: 0 0;
+
+    /* change arrows size here */
+    width: 45px;
+    height: 90px;
+
+    top:50%;
+    margin-top:-45px;
+
+    cursor: pointer;
+    display: block;
+    position: absolute;
+
+    z-index:25;
+
+}
+.royalSlider .arrow:hover {
+
+}
+.royalSlider .arrow.disabled {
+
+}
+/* left arrow */
+.royalSlider .arrow.left {
+    background-position: top left;
+    left: 0;
+}
+/* right arrow */
+.royalSlider .arrow.right {
+    background-position: top right;
+    right: 0;
+}
+
+
+
+
+/* Control navigation container (bullets or thumbs) */
+.royalSlider .royalControlNavOverflow {
+    width:100%;
+    overflow:hidden;
+    position:absolute;
+    margin-top:-20px;
+    z-index:25;
+}
+/* This container is inside ".royalControlNavContainer"
+   and is used for auto horizontal centering */
+.royalSlider .royalControlNavCenterer {
+    float: left;
+    position: relative;
+    left: -50%;
+}
+/* Control navigation container*/
+.royalSlider .royalControlNavContainer {
+    float: left;
+    position: relative;
+    left: 50%;
+}
+
+
+/* Scrollable thumbnails containers */
+.royalSlider .royalControlNavThumbsContainer {
+    left:0;
+    position:relative;
+}
+.royalSlider .thumbsAndArrowsContainer {
+    overflow:hidden;
+    width: 100%;
+    position: relative;
+}
+.royalSlider .royalControlNavOverflow.royalThumbs {
+    width: auto;
+    position: relative;
+    overflow: hidden;
+    margin-top:4px;
+}
+
+
+
+
+
+
+/*
+
+        Control navigation (bullets, thumbnails)
+
+*/
+.royalSlider .royalControlNavOverflow a{
+    background:#0C0 none no-repeat scroll 0 0;
+
+    width:20px;
+    height:20px;
+
+    float:left;
+    cursor:pointer;
+
+    position:relative;
+    display:block;
+
+    text-indent: -9999px;
+}
+/* Current control navigation item */
+.royalSlider .royalControlNavOverflow a.current {
+    background-color: #C00;
+}
+/* Hover state navigation item */
+.royalSlider .royalControlNavOverflow a:hover {
+    background-color: #00C;
+}
+
+/* Thumbnails */
+.royalSlider .royalControlNavOverflow a.royalThumb{
+    /*background: none no-repeat 0 0;*/
+    /*background-color: ;*/
+    width:144px;
+    height:60px;
+    /* thumbnails spacing, use margin-right only */
+    margin-right:4px;
+
+}
+.royalSlider .royalControlNavOverflow a.royalThumb.current {
+    background-position: -3px -3px  !important;
+    border:3px solid #C00 !important;
+    width:138px;
+    height:54px;
+}
+.royalSlider .royalControlNavOverflow a.royalThumb:hover {
+    background-position: -3px -3px;
+    border:3px solid #00C;
+    width:138px;
+    height:54px;
+}
+
+
+
+/*
+
+        Thumbnails navigation arrows
+
+*/
+.royalSlider .thumbsArrow {
+    width: 38px;
+    height: 68px;
+
+    cursor: pointer;
+    display: block;
+    position: relative;
+    z-index: 25;
+
+    background: #C99;
+
+}
+.royalSlider .thumbsArrow.left {
+    float: left;
+}
+.royalSlider .thumbsArrow.right {
+    float: right;
+}
+.royalSlider .thumbsArrow:hover  {
+
+}
+.royalSlider .thumbsArrow.disabled {
+
+}
+
+
+
+
+
+
+/* Captions container */
+.royalSlider .royalCaption {
+    z-index:20;
+    display:block;
+    position:absolute;
+    left:0;
+    top:0;
+    /*font: normal normal normal 1em/1.5em Georgia, serif;
+    color:#FFF;		*/
+}
+/* Caption item */
+.royalSlider .royalCaptionItem {
+    position:absolute;
+    left:0;
+    top:0;
+    margin: 0;
+    padding: 0;
+}
+
+
+
+/* Loading (welcome) screen */
+.royalSlider .royalLoadingScreen {
+    background:#FFF;
+    width:100%;
+    height:100%;
+    position:absolute;
+    z-index:99;
+}
+/* Loading screen text ("Loading...") */
+.royalSlider .royalLoadingScreen p {
+    width:100%;
+    position:absolute;
+    margin:0 auto;
+    top: 45%;
+    text-align:center;
+}
+
+/* single slide image preloader */
+.royalSlider .royalPreloader {
+    position:absolute;
+    width:24px;
+    height:24px;
+    left:50%;
+    top:50%;
+    margin-left:-12px;
+    margin-top:-12px;
+    z-index:0;
+    background-image:url(../img/preloader.gif);
+}
+
+
+
+
+
+
+.royalSlider .grab-cursor{cursor:move;}
+.royalSlider .grab-cursor{cursor:url("../img/cursors/grab.png") 8 8,-moz-grab;}
+.royalSlider .grab-cursor{*cursor:url(../img/cursors/grab.cur);}
+.royalSlider .grab-cursor{cursor:move\0/;} /* ie8 hack */
+
+.royalSlider .grabbing-cursor{cursor:move;}
+.royalSlider .grabbing-cursor{cursor:url("../img/cursors/grabbing.png") 8 8,-moz-grabbing;}
+.royalSlider .grabbing-cursor{*cursor:url(../img/cursors/grabbing.cur);}
+
+
+/* Cursor used if mouse dragging is disabled */
+.royalSlider .auto-cursor{cursor:auto;}
+
+.royalSlider .royalHtmlContent {
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+.royalSlider .non-draggable {
+    cursor: auto;
+}
+.royalSlider .fade-container .royalSlide{
+    position: absolute;
+    left: 0;
+    top: 0;
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    z-index: 10;
+}
+.royalSlider .royalImage {
+    max-width:none;
+    margin:0;
+    padding: 0 !important;
+    border: 0 !important;
+}
+
+.example {
+    display: none;
 }

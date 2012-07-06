@@ -161,7 +161,13 @@ body {
 
 #news_block_wr{
     background: url('../img/news_bg.png') repeat;
-    padding: 8px 10px;
+    padding: 18px 12px;
+    margin-bottom: 200px;
+}
+
+#news_block{
+    height: 194px;
+    width: 100%;
 }
 
 #news_block .header {
@@ -446,4 +452,10 @@ body{
 
 #service_item{
     padding-left: 10px;
+}
+
+#banner_slider li{
+    display: block;
+    float: left;
+    background: #fff;
 }
